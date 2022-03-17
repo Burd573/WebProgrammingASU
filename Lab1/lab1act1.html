@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="https://postman-echo.com/get?" method="GET">
+      <label for="caburdet_color">Color: </label>
+      <input name="caburdett_color" type="color" required />
+      <br />
+
+      <label for="caburdett_date">Date: </label>
+      <input name="caburdett_date" type="date" required />
+      <br />
+
+      <label for="caburdett_datetime-local">Datetime-local: </label>
+      <input
+        name="caburdett_datetime-local"
+        type="datetime-local"
+        min="2020-01-01T00:00"
+        max="2022-04-01T00:00"
+        required
+      />
+      <br />
+
+      <label for="caburdett_email">Email: </label>
+      <input name="caburdett_email" type="email" required />
+      <br />
+
+      <label for="caburdett_month">Month: </label>
+      <input name="caburdett_month" type="month" required />
+      <br />
+
+      <label for="caburdett_number">Number: </label>
+      <input name="caburdett_number" type="number" value="200" required />
+      <br />
+
+      <label for="caburdett_range">Range: </label>
+      <input name="caburdett_range" type="range" min="-15" max="15" required />
+      <br />
+
+      <label for="caburdett_search">Search: </label>
+      <input name="caburdett_search" type="search" required />
+      <br />
+
+      <label for="caburdett_tel">Tel: </label>
+      <input name="caburdett_tel" type="tel" required />
+      <br />
+
+      <label for="caburdett_time">Time: </label>
+      <input name="caburdett_time" type="time" required />
+      <br />
+
+      <label for="caburdett_url">URL: </label>
+      <input name="caburdett_url" type="url" required />
+      <br />
+
+      <label for="caburdett_week">Week: </label>
+      <input name="caburdett_week" type="week" required />
+      <br />
+
+      <label for="caburdet_RTN">Routing Number</label>
+      <input
+        name="caburdet_RTN"
+        type="text"
+        pattern="[0-9]{9} [0-9]{12} [0-9]{4}"
+        size="25"
+        required
+      />
+      <br />
+
+      <input type="submit" />
+    </form>
+  </body>
+</html>
