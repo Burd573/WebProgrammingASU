@@ -31,7 +31,7 @@ class PreCalc {
     let data = JSON.parse(input);
     //handle nested
     if (data.hasOwnProperty("expr")) {
-      calc(JSON.stringify(data.expr));
+      this.calc(JSON.stringify(data.expr));
     }
 
     //handle math
@@ -43,22 +43,28 @@ class PreCalc {
     } else {
       val = this.res;
     }
+    console.log("val1: " + val);
 
-    if (data.op == "push" && data.hasOwnProperty("number")) {
-      this.push(data.number);
+    if (data.op == "push") {
+      console.log("pushing: " + val);
+      this.push(val);
     }
     if (data.op == "pop") {
+      console.log("popping: " + val);
       this.pop();
     }
 
     if (data.op == "add") {
+      console.log("adding val: " + val + " to res: " + this.res);
       this.res += val;
     }
     if (data.op == "subtract") {
+      console.log("subtracting val: " + val + " from res: " + this.res);
       this.res -= val;
     }
 
-    return val;
+    console.log("returning res: " + this.res);
+    return this.res;
   }
 }
 
@@ -78,19 +84,36 @@ console.log(test.calc(test3) + " " + test.print());
 
 // returns -2 and pushes -2 on top of the stack [-2 0]
 var test4 = '{"op" : "push", "expr" : {"op" : "subtract", "number" : 2}}';
+console.log(test.calc(test4) + " " + test.print());
+
 // returns 17 (-2+19) and pushes 17 to the top of the stack [17 -2 0]
 var test5 = '{"op" : "push", "expr" : {"op" : "add", "number" : 19}}';
+console.log(test.calc(test5) + " " + test.print());
+
 // returns 17 and removes it from the stack [-2 0]
 var test6 = '{"op" : "pop"}';
+console.log(test.calc(test6) + " " + test.print());
+
 // prints [-2 0]
 var test7 = '{"op" : "print"}';
+console.log(test.calc(test7) + " " + test.print());
+
 // returns -2 (-2 + 0) [-2 0]
 var test8 = '{"op" : "push", "expr" : {"op" : "add", "expr": {"op" : "pop"}}}';
+console.log(test.calc(test8) + " " + test.print());
+
 // prints [-2 0]
 var test9 = '{"op" : "print"}';
+console.log(test.calc(test9) + " " + test.print());
+
 // returns -2 [0]
 var test10 = '{"op" : "pop"}';
+console.log(test.calc(test10) + " " + test.print());
+
 // returns 0 []
 var test11 = '{"op" : "pop"}';
+console.log(test.calc(test11) + " " + test.print());
+
 // returns (what? You have an empty stack now)
 var test12 = '{"op" : "pop"}';
+console.log(test.calc(test12) + " " + test.print());
