@@ -20,3 +20,6 @@ calc(test3);
 console.log(res);
 console.log("--------Exec Testing-----------");
 exec(expA);
+console.log("------Test invalid json--------");
+var test = "kkllllhhhhh";
+calc(test);

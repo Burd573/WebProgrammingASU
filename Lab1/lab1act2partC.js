@@ -61,25 +61,21 @@ class PreCalc {
 
   calc(input) {
     let val = 0;
-    let data = JSON.parse(input);
-    val = this.handleValue(data, val);
+    try {
+      let data = JSON.parse(input);
+      val = this.handleValue(data, val);
 
-    if (data.op == "print") {
-      return this.print();
-    } else {
-      this.res = this.handleStack(data.op, val);
-      this.res = this.handleMath(data.op, val);
-      return this.res;
+      if (data.op == "print") {
+        return this.print();
+      } else {
+        this.res = this.handleStack(data.op, val);
+        this.res = this.handleMath(data.op, val);
+        return this.res;
+      }
+    } catch (err) {
+      console.log("Error with JSON");
     }
   }
-
-  // exec(arr) {
-  //   var test = new PreCalc(0);
-  //   for (let i in arr) {
-  //     let op = JSON.stringify(arr[i].exp);
-  //     console.log(test.calc(op) + "=" + arr[i].expected);
-  //   }
-  // }
 }
 
 const exec = (arr) => {

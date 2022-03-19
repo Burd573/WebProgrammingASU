@@ -3,20 +3,24 @@ var res = init;
 
 const calc = (input) => {
   let val = 0;
-  let data = JSON.parse(input);
-  if (data.hasOwnProperty("expr")) {
-    calc(JSON.stringify(data.expr));
-  }
-  if (data.hasOwnProperty("number")) {
-    val = data.number;
-  } else {
-    val = res;
-  }
-  if (data.op == "add") {
-    res += val;
-  }
-  if (data.op == "subtract") {
-    res -= val;
+  try {
+    let data = JSON.parse(input);
+    if (data.hasOwnProperty("expr")) {
+      calc(JSON.stringify(data.expr));
+    }
+    if (data.hasOwnProperty("number")) {
+      val = data.number;
+    } else {
+      val = res;
+    }
+    if (data.op == "add") {
+      res += val;
+    }
+    if (data.op == "subtract") {
+      res -= val;
+    }
+  } catch (err) {
+    console.log("Error with json");
   }
 };
 
