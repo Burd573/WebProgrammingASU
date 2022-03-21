@@ -36,6 +36,15 @@ var expA = [
   { exp: { op: "pop" }, expected: 0 },
 ];
 
+var expB = [
+  { "exp": { "op": "add", "number": 0 }, "expected": 0 },
+  { "exp": { "op": "add", "number": -1 }, "expected": -1 },
+  { "exp": { "op": "subtract", "number": -1 }, "expected": 0 },
+  { "exp": { "op": "add", "number": 5 }, "expected": 5 },
+  { "exp": { "op": "subtract", "number": 10 }, "expected": -5 },
+  { "exp": { "op": "add", "number": 15 }, "expected": 10 },
+];
+
 console.log("--------Calc Testing-----------");
 console.log(test.calc(test1));
 console.log(test.calc(test2));
@@ -51,3 +60,5 @@ console.log(test.calc(test11));
 console.log(test.calc(test12));
 console.log("--------Exec Testing-----------");
 exec(expA);
+console.log("------Test Quotes--------");
+exec(expB);
