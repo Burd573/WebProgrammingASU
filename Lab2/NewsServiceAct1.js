@@ -101,17 +101,9 @@ const isDate = (date) => {
 
 const inRange = (date, startRange, endRange) => {
   let storyDate = new Date(date);
-  if (!isDate(storyDate)) {
-    return "The date of the article is invalid";
-  }
   let StartDate = new Date(startRange);
-  if (!isDate(StartDate)) {
-    return "Please enter a valid start date for range";
-  }
   let endDate = new Date(endRange);
-  if (!isDate(endDate)) {
-    return "Please enter a valid end date for range";
-  }
+
   return storyDate >= StartDate && storyDate <= endDate;
 };
 
