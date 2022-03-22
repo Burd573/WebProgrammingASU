@@ -13,20 +13,25 @@ const data = {
   articles: [],
 };
 
-const filterData = {
+const filterDataText = {
   AUTHOR: "",
   TITLE: "",
-  DATE: "",
 };
 
-const newStory = (input, output) => {
-  const newData = data.articles.push(input);
-  fs.writeFileSync(output, JSON.stringify(data.contents));
+const filterDataDate = {
+  startDate: "",
+  endDate: "",
 };
 
 const loadData = (input) => {
   data.contents = JSON.parse(fs.readFileSync(input));
   data.articles = data.contents.NEWS.ARTICLE;
+};
+
+/*************** Update Functions ************************/
+const newStory = (input, output) => {
+  const newData = data.articles.push(input);
+  fs.writeFileSync(output, JSON.stringify(data.contents));
 };
 
 const updateHeadline = (output, index, newHeadline) => {
@@ -44,22 +49,38 @@ const deleteStory = (output, index) => {
   fs.writeFileSync(output, JSON.stringify(data.contents));
 };
 
-const setFilter = (title, author, date) => {
-  filterData.TITLE = title;
-  filterData.AUTHOR = author;
-  filterData.DATE = date;
+/*************** Filter Text Functions ************************/
+
+const setFilters = (title, author) => {
+  filterDataText.TITLE = title;
+  filterDataText.AUTHOR = author;
 };
 
 const clearFilters = () => {
-  filterData.TITLE = "";
-  filterData.AUTHOR = "";
-  filterData.DATE = "";
+  filterDataText.TITLE = "";
+  filterDataText.AUTHOR = "";
 };
 
-const filterStories = () => {
+const setTitleFilter = (title) => {
+  filterDataText.TITLE = title;
+};
+
+const setAuthorFilter = (author) => {
+  filterDataText.AUTHOR = author;
+};
+
+const clearTitleFilter = () => {
+  filterDataText.TITLE = "";
+};
+
+const clearAuthorFilter = () => {
+  filterDataText.AUTHOR = "";
+};
+
+const filterStoriesText = () => {
   stories = data.articles.filter(function (story) {
-    for (var key in filterData) {
-      if (!story[key].includes(filterData[key])) {
+    for (var key in filterDataText) {
+      if (!story[key].includes(filterDataText[key])) {
         return false;
       }
     }
@@ -68,12 +89,65 @@ const filterStories = () => {
   console.log(stories);
 };
 
+/*************** Filter Date Functions ************************/
+const setDateFilter = (startDate, endDate) => {
+  filterDataDate.startDate = startDate;
+  filterDataDate.endDate = endDate;
+};
+
+const isDate = (date) => {
+  return date instanceof Date && !isNaN(date);
+};
+
+const inRange = (date, startRange, endRange) => {
+  let storyDate = new Date(date);
+  if (!isDate(storyDate)) {
+    return "The date of the article is invalid";
+  }
+  let StartDate = new Date(startRange);
+  if (!isDate(StartDate)) {
+    return "Please enter a valid start date for range";
+  }
+  let endDate = new Date(endRange);
+  if (!isDate(endDate)) {
+    return "Please enter a valid end date for range";
+  }
+  return storyDate >= StartDate && storyDate <= endDate;
+};
+
+const filterStoriesDate = () => {
+  stories = data.articles.filter(function (story) {
+    if (
+      !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
+    ) {
+      return false;
+    }
+    return true;
+  });
+  console.log(stories);
+};
+
+/*************** Testing ************************/
 loadData("news1.json");
 //newStory(story, "news1.json");
 //updateHeadline("news1.json", data.articles.length - 1, "Newer Title");
 //updateContent("news1.json", data.articles.length - 1, "New Content");
 //deleteStory("news1.json", data.articles.length - 1);
-setFilter("Newer", "author", "date");
-clearFilters();
-setFilter("", "Igor", "");
-filterStories();
+
+// setFilters("", "Igor");
+// setAuthorFilter("Igor");
+// filterStoriesText();
+// clearFilters();
+
+setDateFilter("08-01-2018", "09-02-2018");
+// console.log(filterDataDate.startDate);
+// console.log(filterDataDate.endDate);
+
+// console.log(
+//   inRange("09-01-2018", filterDataDate.startDate, filterDataDate.endDate)
+// );
+
+filterStoriesDate();
+
+// console.log(inRange(data.articles[0].DATE, "08/10/2018"));
+// console.log(filterData.startDate);
