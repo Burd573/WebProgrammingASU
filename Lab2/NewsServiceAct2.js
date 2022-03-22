@@ -175,33 +175,12 @@ const clearFilters = () => {
   filterDataDate.endDate = "";
 };
 
-/*************** Testing ************************/
-loadData("news1.json");
-// setTitle("Suns Win!");
-// setAuthor("Chris Burdett");
-// setDate();
-// setContent("Suns are the champions!");
-// newStory(story, "news1.json");
-//updateHeadline("news1.json", data.articles.length - 1, "Newer Title");
-//updateContent("news1.json", data.articles.length - 1, "New Content");
-//deleteStory("news1.json", data.articles.length - 1);
+const readline = require("readline").createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-// setFilters("", "Igor");
-//setAuthorFilter("Igor");
-// filterStoriesText();
-// clearFilters();
-
-//setDateFilter("08-01-2018", "09-02-2018");
-// console.log(filterDataDate.startDate);
-// console.log(filterDataDate.endDate);
-
-// console.log(
-//   inRange("09-01-2018", filterDataDate.startDate, filterDataDate.endDate)
-// );
-
-//filterStoriesDate();
-
-// console.log(inRange(data.articles[0].DATE, "08/10/2018"));
-// console.log(filterData.startDate);
-
-console.log(filter());
+readline.question(`What's your name?`, (name) => {
+  console.log(`Hi ${name}!`);
+  readline.close();
+});
