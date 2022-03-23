@@ -1,2 +1,4 @@
 node
 .load NewsServiceAct2.js
+
+node NewsServiceAct2.js

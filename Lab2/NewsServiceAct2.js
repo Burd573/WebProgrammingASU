@@ -2,17 +2,18 @@ const fs = require("fs");
 
 // News story object, can be modified to add new story
 const story = {
-  TITLE: "Title",
-  AUTHOR: "author",
-  DATE: "date",
-  PUBLIC: "f",
-  CONTENT: "content",
+  TITLE: "",
+  AUTHOR: "",
+  DATE: "",
+  PUBLIC: "",
+  CONTENT: "",
 };
 
 // Data retrieved from file, contains all news stories stored in file
 const data = {
   contents: "data",
   articles: [],
+  selected: "",
 };
 
 // Filters author and title from news stories
@@ -29,9 +30,21 @@ const filterDataDate = {
 
 // Loads news stories data from file
 const loadData = (input) => {
-  data.contents = JSON.parse(fs.readFileSync(input));
-  data.articles = data.contents.NEWS.ARTICLE;
+  fs.readFile(input, (err, a) => {
+    data.contents = JSON.parse(a);
+    data.articles = data.contents.NEWS.ARTICLE;
+  });
 };
+
+// const loadData = (input) => {
+//   return new Promise((resolve, reject) => {
+//     fs.readFile(input, (err, a) => {
+//       data.contents = JSON.parse(a);
+//       data.articles = data.contents.NEWS.ARTICLE;
+//     });
+//     resolve();
+//   });
+// };
 
 /*************** Update Functions ************************/
 // Writes a new news story to the file
@@ -180,7 +193,126 @@ const readline = require("readline").createInterface({
   output: process.stdout,
 });
 
-readline.question(`What's your name?`, (name) => {
-  console.log(`Hi ${name}!`);
-  readline.close();
-});
+const menu = () => {
+  readline.question(
+    `Please choose from the following:
+1. Write a new news story
+2. Update a news story headline
+3. Change the content of a news story
+4. Delete a news story
+5. Search for a new story
+Choice: `,
+    (input) => {
+      if (input == 1) {
+        writeStory();
+      }
+      if (input == 2) {
+        updateStoryTitle();
+      }
+      if (input == 3) {
+        updateStoryContent();
+      }
+      //readline.close();
+    }
+  );
+};
+/************* Write Story Functions **************/
+const storyName = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Name: ", (name) => {
+      setTitle(name);
+      resolve();
+    });
+  });
+};
+
+const storyAuthor = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Author Name: ", (name) => {
+      setAuthor(name);
+      resolve();
+    });
+  });
+};
+
+const storyFlag = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Set Public(T/F): ", (public) => {
+      setPublic(public);
+      resolve();
+    });
+  });
+};
+
+const storyContent = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Content: ", (story) => {
+      setContent(story);
+      resolve();
+    });
+  });
+};
+
+const writeStory = async () => {
+  await storyName();
+  await storyAuthor();
+  await storyFlag();
+  await storyContent();
+  setDate();
+  newStory(story, "news1.json");
+  loadData("news1.json");
+  console.log("Story Added!");
+  menu();
+};
+
+/************** Update Title Functions ***************/
+const getStory = () => {
+  for (var i in data.articles) {
+    console.log(i + ": " + data.articles[i].TITLE);
+  }
+  return new Promise((resolve, reject) => {
+    readline.question("Choose an article to update: ", (input) => {
+      data.selected = input;
+      resolve();
+    });
+  });
+};
+
+const storyTitle = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Title: ", (title) => {
+      updateHeadline("news1.json", data.selected, title);
+      resolve();
+    });
+  });
+};
+
+const updateStoryTitle = async () => {
+  await getStory();
+  await storyTitle();
+  loadData("news1.json");
+  console.log("Title Changed!");
+  menu();
+};
+
+/************** Update Content Functions ***************/
+
+const newStoryContent = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Conent: ", (content) => {
+      updateContent("news1.json", data.selected, content);
+      resolve();
+    });
+  });
+};
+
+const updateStoryContent = async () => {
+  await getStory();
+  await newStoryContent();
+  loadData("news1.json");
+  console.log("content Changed!");
+  menu();
+};
+
+loadData("news1.json");
+menu();
