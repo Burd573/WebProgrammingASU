@@ -54,13 +54,23 @@ const newStory = (input, output) => {
 };
 
 // Set the title of the new story
-const setTitle = (input) => {
-  story.TITLE = input;
+const setTitle = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Name: ", (name) => {
+      story.TITLE = name;
+      resolve();
+    });
+  });
 };
 
 // Set the author of the new story
-const setAuthor = (input) => {
-  story.AUTHOR = input;
+const setAuthor = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Author Name: ", (author) => {
+      story.AUTHOR = author;
+      resolve();
+    });
+  });
 };
 
 // Set the date of the new story to the current day and format date
@@ -78,31 +88,51 @@ const setDate = () => {
 };
 
 // Set the public flag of the new story
-const setPublic = (input) => {
-  story.PUBLIC = input;
+const setPublic = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Set Public(T/F): ", (public) => {
+      story.PUBLIC = public;
+      resolve();
+    });
+  });
 };
 
 // Set the content of the new story
-const setContent = (input) => {
-  story.CONTENT = input;
+const setContent = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Content: ", (content) => {
+      story.CONTENT = content;
+      resolve();
+    });
+  });
 };
 
 // Updates news story headline
-const updateHeadline = (output, index, newHeadline) => {
-  data.articles[index].TITLE = newHeadline;
-  fs.writeFileSync(output, JSON.stringify(data.contents));
+const updateHeadline = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Title: ", (title) => {
+      data.articles[data.selected].TITLE = title;
+      fs.writeFileSync("news1.json", JSON.stringify(data.contents));
+      resolve();
+    });
+  });
 };
 
 // Updates news story content
 const updateContent = (output, index, newContent) => {
-  data.articles[index].CONTENT = newContent;
-  fs.writeFileSync(output, JSON.stringify(data.contents));
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Conent: ", (content) => {
+      data.articles[data.selected].CONTENT = content;
+      fs.writeFileSync("news1.json", JSON.stringify(data.contents));
+      resolve();
+    });
+  });
 };
 
 // Deletes a news story from the file
-const deleteStory = (output, index) => {
-  data.articles.splice(index);
-  fs.writeFileSync(output, JSON.stringify(data.contents));
+const deleteStory = () => {
+  data.articles.splice(data.selected, 1);
+  fs.writeFileSync("news1.json", JSON.stringify(data.contents));
 };
 
 /*************** Filter Text Functions ************************/
@@ -113,13 +143,23 @@ const setFilters = (title, author) => {
 };
 
 // Set only title filter
-const setTitleFilter = (title) => {
-  filterDataText.TITLE = title;
+const setTitleFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Headline Filter: ", (headline) => {
+      filterDataText.TITLE = headline;
+      resolve();
+    });
+  });
 };
 
 // Set only author filter
 const setAuthorFilter = (author) => {
-  filterDataText.AUTHOR = author;
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Author Filter: ", (author) => {
+      filterDataText.AUTHOR = author;
+      resolve();
+    });
+  });
 };
 
 // Clear only title filter
@@ -152,6 +192,24 @@ const setDateFilter = (startDate, endDate) => {
   filterDataDate.endDate = endDate;
 };
 
+const setStartDateFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Start Date Filter: ", (date) => {
+      filterDataDate.startDate = date;
+      resolve();
+    });
+  });
+};
+
+const setEndDateFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter End Date Filter: ", (date) => {
+      filterDataDate.endDate = date;
+      resolve();
+    });
+  });
+};
+
 // Check if article is in range of dates provided by date filter
 const inRange = (date, startRange, endRange) => {
   let storyDate = new Date(date);
@@ -163,15 +221,19 @@ const inRange = (date, startRange, endRange) => {
 
 // Filter stories by date, takes in array of stories
 const filterStoriesDate = (input) => {
-  stories = input.filter(function (story) {
-    if (
-      !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
-    ) {
-      return false;
-    }
-    return true;
-  });
-  return stories;
+  if (filterDataDate.startDate !== "" && filterDataDate.endDate !== "") {
+    stories = input.filter(function (story) {
+      if (
+        !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
+      ) {
+        return false;
+      }
+      return true;
+    });
+    return stories;
+  } else {
+    return input;
+  }
 };
 
 // filter stories on all criteria (author, title, date range)
@@ -212,60 +274,17 @@ Choice: `,
       if (input == 3) {
         updateStoryContent();
       }
+      if (input == 4) {
+        deleteNewsStory();
+      }
+      if (input == 5) {
+        fitlerStories();
+      }
       //readline.close();
     }
   );
 };
-/************* Write Story Functions **************/
-const storyName = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Story Name: ", (name) => {
-      setTitle(name);
-      resolve();
-    });
-  });
-};
 
-const storyAuthor = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Author Name: ", (name) => {
-      setAuthor(name);
-      resolve();
-    });
-  });
-};
-
-const storyFlag = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Set Public(T/F): ", (public) => {
-      setPublic(public);
-      resolve();
-    });
-  });
-};
-
-const storyContent = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Story Content: ", (story) => {
-      setContent(story);
-      resolve();
-    });
-  });
-};
-
-const writeStory = async () => {
-  await storyName();
-  await storyAuthor();
-  await storyFlag();
-  await storyContent();
-  setDate();
-  newStory(story, "news1.json");
-  loadData("news1.json");
-  console.log("Story Added!");
-  menu();
-};
-
-/************** Update Title Functions ***************/
 const getStory = () => {
   for (var i in data.articles) {
     console.log(i + ": " + data.articles[i].TITLE);
@@ -277,19 +296,25 @@ const getStory = () => {
     });
   });
 };
+/************* Write Story Functions **************/
 
-const storyTitle = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter New Title: ", (title) => {
-      updateHeadline("news1.json", data.selected, title);
-      resolve();
-    });
-  });
+const writeStory = async () => {
+  await setTitle();
+  await setAuthor();
+  await setPublic();
+  await setContent();
+  setDate();
+  newStory(story, "news1.json");
+  loadData("news1.json");
+  console.log("Story Added!");
+  menu();
 };
+
+/************** Update Title Functions ***************/
 
 const updateStoryTitle = async () => {
   await getStory();
-  await storyTitle();
+  await updateHeadline();
   loadData("news1.json");
   console.log("Title Changed!");
   menu();
@@ -297,20 +322,31 @@ const updateStoryTitle = async () => {
 
 /************** Update Content Functions ***************/
 
-const newStoryContent = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter New Conent: ", (content) => {
-      updateContent("news1.json", data.selected, content);
-      resolve();
-    });
-  });
-};
-
 const updateStoryContent = async () => {
   await getStory();
-  await newStoryContent();
+  await updateContent();
   loadData("news1.json");
   console.log("content Changed!");
+  menu();
+};
+
+/************** Delete Story Functions ***************/
+
+const deleteNewsStory = async () => {
+  await getStory();
+  deleteStory();
+  loadData("news1.json");
+  console.log("Story Deleted!");
+  menu();
+};
+
+const fitlerStories = async () => {
+  await setTitleFilter();
+  await setAuthorFilter();
+  await setStartDateFilter();
+  await setEndDateFilter();
+  console.log("Filtered Stories:");
+  console.log(filter());
   menu();
 };
 
