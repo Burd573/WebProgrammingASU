@@ -43,6 +43,8 @@ const newStory = () => {
   fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
     if (err) {
       console.log("Error Adding Story");
+    } else {
+      console.log("Story Added!");
     }
   });
 };
@@ -106,11 +108,7 @@ const updateHeadline = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter New Title: ", (title) => {
       data.articles[data.selected].TITLE = title;
-      fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
-        if (err) {
-          console.log("Error Adding Story");
-        }
-      });
+      fs.writeFileSync("news1.json", JSON.stringify(data.contents));
       resolve();
     });
   });
@@ -121,11 +119,7 @@ const updateContent = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter New Conent: ", (content) => {
       data.articles[data.selected].CONTENT = content;
-      fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
-        if (err) {
-          console.log("Error Adding Story");
-        }
-      });
+      fs.writeFileSync("news1.json", JSON.stringify(data.contents));
       resolve();
     });
   });
@@ -134,11 +128,7 @@ const updateContent = () => {
 // Deletes a news story from the file
 const deleteStory = () => {
   data.articles.splice(data.selected, 1);
-  fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
-    if (err) {
-      console.log("Error Adding Story");
-    }
-  });
+  fs.writeFileSync("news1.json", JSON.stringify(data.contents));
 };
 
 /*************** Filter Text Functions ************************/

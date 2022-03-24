@@ -42,6 +42,20 @@
         "DATE": "03-24-2022",
         "PUBLIC": "f",
         "CONTENT": "Neeeeeewww"
+      },
+      {
+        "TITLE": "Here is a story",
+        "AUTHOR": "hhh",
+        "DATE": "03-24-2022",
+        "PUBLIC": "t",
+        "CONTENT": "Here is the content"
+      },
+      {
+        "TITLE": "New Story",
+        "AUTHOR": "New Author",
+        "DATE": "03-24-2022",
+        "PUBLIC": "T",
+        "CONTENT": "Content!!!"
       }
     ]
   }
