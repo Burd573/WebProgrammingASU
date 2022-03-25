@@ -1,8 +1,17 @@
 const fs = require("fs");
 const EventEmitter = require("events").EventEmitter;
 const event = new EventEmitter();
+const file = "news1.json";
 
-event.on("start", () => {});
+event.on("start", () => {
+  setImmediate(() => {
+    fs.appendFile("lab2logger.txt", "Program Started\n", (err) => {
+      if (err) {
+        console.log("Error Adding to logs");
+      }
+    });
+  });
+});
 
 event.on("exit", () => {
   setImmediate(() => {
@@ -16,11 +25,15 @@ event.on("exit", () => {
 
 event.on("storyCreated", () => {
   setImmediate(() => {
-    fs.appendFile("lab2logger.txt", "Story Created\n", (err) => {
-      if (err) {
-        console.log("Error Adding to logs");
+    fs.appendFile(
+      "lab2logger.txt",
+      "Story Created. Written to: " + file + "\n",
+      (err) => {
+        if (err) {
+          console.log("Error Adding to logs");
+        }
       }
-    });
+    );
   });
 });
 
@@ -34,11 +47,27 @@ event.on("storyDeleted", () => {
   });
 });
 
+// Set and format the current date
+const setDate = () => {
+  var date = new Date();
+  var year = date.getFullYear();
+
+  var month = (date.getMonth() + 1).toString();
+  month = month.length > 1 ? month : "0" + month;
+
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : "0" + day;
+
+  //story.DATE = month + "-" + day + "-" + year;
+  ret = month + "-" + day + "-" + year;
+  return ret;
+};
+
 // News story object, can be modified to add new story
 const story = {
   TITLE: "",
   AUTHOR: "",
-  DATE: "",
+  DATE: setDate(),
   PUBLIC: "",
   CONTENT: "",
 };
@@ -59,13 +88,16 @@ const filterDataText = {
 // sets date range to filter from news stories
 const filterDataDate = {
   startDate: "",
-  endDate: "",
+  endDate: setDate(),
 };
 
 // Loads news stories data from file
 const loadData = (input) => {
   return new Promise((resolve, reject) => {
     fs.readFile(input, (err, a) => {
+      if (err) {
+        console.log("error loading file");
+      }
       data.contents = JSON.parse(a);
       data.articles = data.contents.NEWS.ARTICLE;
     });
@@ -77,25 +109,13 @@ const loadData = (input) => {
 // Writes a new news story to the file
 const newStory = () => {
   data.articles.push(story);
-  fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
+  fs.writeFile(file, JSON.stringify(data.contents), (err) => {
     if (err) {
       console.log("Error Adding Story");
     }
+    loadData(file);
   });
 };
-
-// const timeout = new Promise((resolve, reject) => {
-//   setTimeout(() => {
-//     reject("timed out");
-//   }, 5000);
-// });
-
-// const withTimeout = (time, promise) => {
-//   const timeout = new Promise((resolve, reject) =>
-//     setTimeout(() => reject(console.log("Timed out!")), time)
-//   );
-//   return Promise.race([promise, timeout]);
-// };
 
 // Set the title of the new story
 const setTitle = () => {
@@ -115,20 +135,6 @@ const setAuthor = () => {
       resolve();
     });
   });
-};
-
-// Set the date of the new story to the current day and format date
-const setDate = () => {
-  var date = new Date();
-  var year = date.getFullYear();
-
-  var month = (date.getMonth() + 1).toString();
-  month = month.length > 1 ? month : "0" + month;
-
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : "0" + day;
-
-  story.DATE = month + "-" + day + "-" + year;
 };
 
 // Set the public flag of the new story
@@ -156,10 +162,11 @@ const updateHeadline = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter New Title: ", (title) => {
       data.articles[data.selected].TITLE = title;
-      fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
+      fs.writeFile(file, JSON.stringify(data.contents), (err) => {
         if (err) {
           console.log("Error Adding Story");
         }
+        loadData(file);
       });
       resolve();
     });
@@ -171,10 +178,11 @@ const updateContent = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter New Conent: ", (content) => {
       data.articles[data.selected].CONTENT = content;
-      fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
+      fs.writeFile(file, JSON.stringify(data.contents), (err) => {
         if (err) {
           console.log("Error Adding Story");
         }
+        loadData(file);
       });
       resolve();
     });
@@ -185,10 +193,11 @@ const updateContent = () => {
 const deleteStory = () => {
   return new Promise((resolve, reject) => {
     data.articles.splice(data.selected, 1);
-    fs.writeFile("news1.json", JSON.stringify(data.contents), (err) => {
+    fs.writeFile(file, JSON.stringify(data.contents), (err) => {
       if (err) {
         console.log("Error Adding Story");
       }
+      loadData(file);
     });
     resolve();
   });
@@ -221,16 +230,6 @@ const setAuthorFilter = () => {
   });
 };
 
-// Clear only title filter
-const clearTitleFilter = () => {
-  filterDataText.TITLE = "";
-};
-
-// clear only author filter
-const clearAuthorFilter = () => {
-  filterDataText.AUTHOR = "";
-};
-
 // Filter all stories by title and author, returns filtered array of stories
 const filterStoriesText = () => {
   stories = data.articles.filter(function (story) {
@@ -245,11 +244,6 @@ const filterStoriesText = () => {
 };
 
 /*************** Filter Date Functions ************************/
-// Set the date filter range
-const setDateFilter = (startDate, endDate) => {
-  filterDataDate.startDate = startDate;
-  filterDataDate.endDate = endDate;
-};
 
 const setStartDateFilter = () => {
   return new Promise((resolve, reject) => {
@@ -306,7 +300,7 @@ const clearFilters = () => {
   filterDataText.TITLE = "";
   filterDataText.AUTHOR = "";
   filterDataDate.startDate = "";
-  filterDataDate.endDate = "";
+  filterDataDate.endDate = setDate();
 };
 
 const readline = require("readline").createInterface({
@@ -342,7 +336,7 @@ Choice: `,
       }
       if (input == 0) {
         event.emit("exit");
-        process.exit(1);
+        readline.close();
       }
       //readline.close();
     }
@@ -363,14 +357,13 @@ const getStory = () => {
 /************* Write Story Functions **************/
 
 const writeStory = async () => {
-  //await withTimeout(5000, setTitle());
   await setTitle();
   await setAuthor();
   await setPublic();
   await setContent();
   setDate();
   newStory();
-  await loadData("news1.json");
+  //   await loadData(file);
   event.emit("storyCreated");
   console.log("Story Created!");
   menu();
@@ -381,7 +374,7 @@ const writeStory = async () => {
 const updateStoryTitle = async () => {
   await getStory();
   await updateHeadline();
-  await loadData("news1.json");
+  //   await loadData(file);
   console.log("Title Changed!");
   menu();
 };
@@ -391,7 +384,7 @@ const updateStoryTitle = async () => {
 const updateStoryContent = async () => {
   await getStory();
   await updateContent();
-  await loadData("news1.json");
+  //   await loadData(file);
   console.log("Content Changed!");
   menu();
 };
@@ -401,7 +394,6 @@ const updateStoryContent = async () => {
 const deleteNewsStory = async () => {
   await getStory();
   await deleteStory();
-  await loadData("news1.json");
   event.emit("storyDeleted");
   console.log("Story Deleted!");
   menu();
@@ -418,5 +410,6 @@ const fitlerStories = async () => {
   menu();
 };
 
-loadData("news1.json");
+event.emit("start");
+loadData(file);
 menu();

@@ -35,20 +35,6 @@
         "DATE": "03-24-2022",
         "PUBLIC": "f",
         "CONTENT": "Suns are the champions!"
-      },
-      {
-        "TITLE": "Test",
-        "AUTHOR": "Test",
-        "DATE": "03-24-2022",
-        "PUBLIC": "t",
-        "CONTENT": "Test"
-      },
-      {
-        "TITLE": "Bug?",
-        "AUTHOR": "Where",
-        "DATE": "03-24-2022",
-        "PUBLIC": "f",
-        "CONTENT": "are you?"
       }
     ]
   }
