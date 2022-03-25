@@ -3,6 +3,7 @@ const EventEmitter = require("events").EventEmitter;
 const event = new EventEmitter();
 const file = "news1.json";
 
+/*************** Logging Functions **********************/
 event.on("start", () => {
   setImmediate(() => {
     fs.appendFile("lab2logger.txt", "Program Started\n", (err) => {
@@ -47,51 +48,6 @@ event.on("storyDeleted", () => {
   });
 });
 
-// Set and format the current date
-const setDate = () => {
-  var date = new Date();
-  var year = date.getFullYear();
-
-  var month = (date.getMonth() + 1).toString();
-  month = month.length > 1 ? month : "0" + month;
-
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : "0" + day;
-
-  //story.DATE = month + "-" + day + "-" + year;
-  ret = month + "-" + day + "-" + year;
-  return ret;
-};
-
-// News story object, can be modified to add new story
-const story = {
-  TITLE: "",
-  AUTHOR: "",
-  DATE: setDate(),
-  PUBLIC: "",
-  CONTENT: "",
-};
-
-// Data retrieved from file, contains all news stories stored in file
-const data = {
-  contents: "data",
-  articles: [],
-  selected: "",
-};
-
-// Filters author and title from news stories
-const filterDataText = {
-  AUTHOR: "",
-  TITLE: "",
-};
-
-// sets date range to filter from news stories
-const filterDataDate = {
-  startDate: "",
-  endDate: setDate(),
-};
-
-// Loads news stories data from file
 const loadData = (input) => {
   return new Promise((resolve, reject) => {
     fs.readFile(input, (err, a) => {
@@ -103,6 +59,96 @@ const loadData = (input) => {
     });
     resolve();
   });
+};
+
+/**
+ * Set and format the current date
+ *
+ * The filter end date will automatically get set to the current day. If the user
+ * does not specify an end date but specifies a beginning date, the filter will bring up * all articles from the start date to the current date
+ *
+ * When an article is added to the json file, the current date it automatically inserted
+ *
+ * Returns the current date formatted as mm-dd-yyy
+ */
+const setDate = () => {
+  var date = new Date();
+  var year = date.getFullYear();
+
+  var month = (date.getMonth() + 1).toString();
+  month = month.length > 1 ? month : "0" + month;
+
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : "0" + day;
+
+  ret = month + "-" + day + "-" + year;
+  return ret;
+};
+
+/********************* Storage Objects **************************/
+
+/**
+ * News story object, can be modified to add new story
+ *
+ * The object holds all article data (title, author, date, public flag, and content)
+ * When adding a new article to the file, the article data will be stored in this object
+ * and the object as a whole will get pushed to the articles array in the file
+ */
+const story = {
+  TITLE: "",
+  AUTHOR: "",
+  DATE: setDate(),
+  PUBLIC: "",
+  CONTENT: "",
+};
+
+/**
+ * Object containing all data from file.
+ *
+ * When the file is read, all data will be stored in this object.
+ * Contents is the whole NEWS JSON object
+ * Articles is an array of all the articles from the NEWS JSON object
+ * Selected is the index of an article (used when the user picks one specific
+ * article to edit)
+ */
+const data = {
+  contents: "data",
+  articles: [],
+  selected: "",
+};
+
+/**
+ * Object containing text filters
+ *
+ * Author is set when the user enters a filter for the article author
+ * Title is set when the user enters a filter for the article title
+ *
+ * These filters are used when the user wants to filter either the
+ * article title or the author of the article.
+ *
+ * Will be combined with date range filter for complete filter
+ */
+const textFilter = {
+  AUTHOR: "",
+  TITLE: "",
+};
+
+/**
+ * Object containing date range filters
+ *
+ * startDate is the start of the date range
+ * endDate is the end of the date range - automatically set to the current
+ * day in case the user does not enter an end date. This allows the user
+ * to enter a start date but not an end date and get all articles from the
+ * startDate to today
+ *
+ * These filters are used when the user wants to filter the articles by date
+ *
+ * Will be combined with text filter for complete filter
+ */
+const dateFilter = {
+  startDate: "",
+  endDate: setDate(),
 };
 
 /*************** Update Functions ************************/
@@ -206,15 +252,15 @@ const deleteStory = () => {
 /*************** Filter Text Functions ************************/
 // Sets the title and author filters
 const setFilters = (title, author) => {
-  filterDataText.TITLE = title;
-  filterDataText.AUTHOR = author;
+  textFilter.TITLE = title;
+  textFilter.AUTHOR = author;
 };
 
 // Set only title filter
 const setTitleFilter = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter Headline Filter: ", (headline) => {
-      filterDataText.TITLE = headline;
+      textFilter.TITLE = headline;
       resolve();
     });
   });
@@ -224,7 +270,7 @@ const setTitleFilter = () => {
 const setAuthorFilter = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter Author Filter: ", (author) => {
-      filterDataText.AUTHOR = author;
+      textFilter.AUTHOR = author;
       resolve();
     });
   });
@@ -233,8 +279,8 @@ const setAuthorFilter = () => {
 // Filter all stories by title and author, returns filtered array of stories
 const filterStoriesText = () => {
   stories = data.articles.filter(function (story) {
-    for (var key in filterDataText) {
-      if (!story[key].includes(filterDataText[key])) {
+    for (var key in textFilter) {
+      if (!story[key].includes(textFilter[key])) {
         return false;
       }
     }
@@ -248,7 +294,7 @@ const filterStoriesText = () => {
 const setStartDateFilter = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter Start Date Filter: ", (date) => {
-      filterDataDate.startDate = date;
+      dateFilter.startDate = date;
       resolve();
     });
   });
@@ -257,7 +303,7 @@ const setStartDateFilter = () => {
 const setEndDateFilter = () => {
   return new Promise((resolve, reject) => {
     readline.question("Enter End Date Filter: ", (date) => {
-      filterDataDate.endDate = date;
+      dateFilter.endDate = date;
       resolve();
     });
   });
@@ -274,11 +320,9 @@ const inRange = (date, startRange, endRange) => {
 
 // Filter stories by date, takes in array of stories
 const filterStoriesDate = (input) => {
-  if (filterDataDate.startDate !== "" && filterDataDate.endDate !== "") {
+  if (dateFilter.startDate !== "" && dateFilter.endDate !== "") {
     stories = input.filter(function (story) {
-      if (
-        !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
-      ) {
+      if (!inRange(story.DATE, dateFilter.startDate, dateFilter.endDate)) {
         return false;
       }
       return true;
@@ -297,10 +341,10 @@ const filter = () => {
 
 // Clear all filters
 const clearFilters = () => {
-  filterDataText.TITLE = "";
-  filterDataText.AUTHOR = "";
-  filterDataDate.startDate = "";
-  filterDataDate.endDate = setDate();
+  textFilter.TITLE = "";
+  textFilter.AUTHOR = "";
+  dateFilter.startDate = "";
+  dateFilter.endDate = setDate();
 };
 
 const readline = require("readline").createInterface({
