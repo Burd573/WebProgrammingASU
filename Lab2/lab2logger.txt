@@ -50,3 +50,13 @@ Story Deleted
 Story Deleted
 Story Deleted
 Program Closed
+Program Started
+Story Created. Written to: news1.json
+Story Deleted
+Program Closed
+Program Started
+Story Created. Written to: news1.json
+Story Deleted
+Program Closed
+Program Started
+Program Closed

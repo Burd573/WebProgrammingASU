@@ -3,6 +3,11 @@ const EventEmitter = require("events").EventEmitter;
 const event = new EventEmitter();
 const file = "news1.json";
 
+const readline = require("readline").createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
 /*************** Logging Functions **********************/
 event.on("start", () => {
   setImmediate(() => {
@@ -48,16 +53,22 @@ event.on("storyDeleted", () => {
   });
 });
 
-const loadData = (input) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(input, (err, a) => {
-      if (err) {
-        console.log("error loading file");
-      }
-      data.contents = JSON.parse(a);
-      data.articles = data.contents.NEWS.ARTICLE;
-    });
-    resolve();
+/**
+ * Load the data from the file and store in the data object.
+ *
+ * The complete json object is stored in data.contents
+ * The articles array is stored in data.articles
+ *
+ * The file is read asynchronously. After the file is read, the callback
+ * function stores the data
+ */
+const loadData = () => {
+  fs.readFile(file, (err, file) => {
+    if (err) {
+      console.log("error loading file");
+    }
+    data.contents = JSON.parse(file);
+    data.articles = data.contents.NEWS.ARTICLE;
   });
 };
 
@@ -83,6 +94,39 @@ const setDate = () => {
 
   ret = month + "-" + day + "-" + year;
   return ret;
+};
+
+/**
+ * Writes a new article to the file.
+ *
+ * Pushes the story object to the data object articles array and writes
+ * the data.articles array to the file. After the file is written to,
+ * the new data is loaded into the data object to keep the object current.
+ */
+const newStory = () => {
+  data.articles.push(story);
+  fs.writeFile(file, JSON.stringify(data.contents), (err) => {
+    if (err) {
+      console.log("Error Adding Story");
+    }
+    loadData();
+  });
+};
+
+/**
+ * List all stories in file and get input from user indicating which story to update
+ * @returns promise
+ */
+const getStory = () => {
+  for (var i in data.articles) {
+    console.log(i + ": " + data.articles[i].TITLE);
+  }
+  return new Promise((resolve, reject) => {
+    readline.question("Choose an article to update: ", (input) => {
+      data.selected = input;
+      resolve();
+    });
+  });
 };
 
 /********************* Storage Objects **************************/
@@ -151,87 +195,85 @@ const dateFilter = {
   endDate: setDate(),
 };
 
-/*************** Update Functions ************************/
-// Writes a new news story to the file
-const newStory = () => {
-  data.articles.push(story);
-  fs.writeFile(file, JSON.stringify(data.contents), (err) => {
-    if (err) {
-      console.log("Error Adding Story");
-    }
-    loadData(file);
-  });
+/*************** Setters for Objects ************************/
+/**
+ * These functions act as setters for setting the objects before altering the data.
+ * They can be used in the API without needing the CLI
+ */
+
+const setTitle = (name) => {
+  story.TITLE = name;
 };
 
-// Set the title of the new story
-const setTitle = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Story Name: ", (name) => {
-      story.TITLE = name;
-      resolve();
-    });
-  });
+const setAuthor = (author) => {
+  story.AUTHOR = author;
 };
 
-// Set the author of the new story
-const setAuthor = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Author Name: ", (author) => {
-      story.AUTHOR = author;
-      resolve();
-    });
-  });
+const setPublic = (public) => {
+  story.PUBLIC = public;
 };
 
-// Set the public flag of the new story
-const setPublic = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Set Public(T/F): ", (public) => {
-      story.PUBLIC = public;
-      resolve();
-    });
-  });
+const setContent = (content) => {
+  story.CONTENT = content;
 };
 
-// Set the content of the new story
-const setContent = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Story Content: ", (content) => {
-      story.CONTENT = content;
-      resolve();
-    });
-  });
+const setAuthorFilter = (authorFilter) => {
+  textFilter.AUTHOR = authorFilter;
 };
+
+const setTitleFilter = (titleFilter) => {
+  textFilter.TITLE = titleFilter;
+};
+
+const setStartDateFilter = (startDateFilter) => {
+  dateFilter.startDate = startDateFilter;
+};
+
+const setEndDateFilter = (endDateFilter) => {
+  dateFilter.endDate = endDateFilter;
+};
+
+// Clear all filters
+const clearFilters = () => {
+  textFilter.TITLE = "";
+  textFilter.AUTHOR = "";
+  dateFilter.startDate = "";
+  dateFilter.endDate = setDate();
+};
+
+/***************** Update Functions ********************/
+/**
+ * These functions update the file based on the data objects. They take in
+ * parameters and use the input to update the objects before writing to the
+ * file. They can be used in the API without the CLI
+ */
 
 // Updates news story headline
-const updateHeadline = () => {
+const updateHeadline = (title) => {
   return new Promise((resolve, reject) => {
-    readline.question("Enter New Title: ", (title) => {
-      data.articles[data.selected].TITLE = title;
-      fs.writeFile(file, JSON.stringify(data.contents), (err) => {
-        if (err) {
-          console.log("Error Adding Story");
-        }
-        loadData(file);
-      });
-      resolve();
+    data.articles[data.selected].TITLE = title;
+    fs.writeFile(file, JSON.stringify(data.contents), (err) => {
+      if (err) {
+        console.log("Error Writing New Headline to File");
+        reject();
+      }
+      loadData();
     });
+    resolve();
   });
 };
 
 // Updates news story content
-const updateContent = () => {
+const updateContent = (content) => {
   return new Promise((resolve, reject) => {
-    readline.question("Enter New Conent: ", (content) => {
-      data.articles[data.selected].CONTENT = content;
-      fs.writeFile(file, JSON.stringify(data.contents), (err) => {
-        if (err) {
-          console.log("Error Adding Story");
-        }
-        loadData(file);
-      });
-      resolve();
+    data.articles[data.selected].CONTENT = content;
+    fs.writeFile(file, JSON.stringify(data.contents), (err) => {
+      if (err) {
+        console.log("Error Writing New Content to File");
+      }
+      loadData();
     });
+    resolve();
   });
 };
 
@@ -241,40 +283,19 @@ const deleteStory = () => {
     data.articles.splice(data.selected, 1);
     fs.writeFile(file, JSON.stringify(data.contents), (err) => {
       if (err) {
-        console.log("Error Adding Story");
+        console.log("Error Updating file after delete");
       }
-      loadData(file);
+      loadData();
     });
     resolve();
   });
 };
 
-/*************** Filter Text Functions ************************/
-// Sets the title and author filters
-const setFilters = (title, author) => {
-  textFilter.TITLE = title;
-  textFilter.AUTHOR = author;
-};
-
-// Set only title filter
-const setTitleFilter = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Headline Filter: ", (headline) => {
-      textFilter.TITLE = headline;
-      resolve();
-    });
-  });
-};
-
-// Set only author filter
-const setAuthorFilter = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Author Filter: ", (author) => {
-      textFilter.AUTHOR = author;
-      resolve();
-    });
-  });
-};
+/********************** Filter Functions *****************************/
+/**
+ * These functions implement the filter functionality. Sets the filter objects
+ * and filters the data based on those objects
+ */
 
 // Filter all stories by title and author, returns filtered array of stories
 const filterStoriesText = () => {
@@ -289,26 +310,6 @@ const filterStoriesText = () => {
   return stories;
 };
 
-/*************** Filter Date Functions ************************/
-
-const setStartDateFilter = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter Start Date Filter: ", (date) => {
-      dateFilter.startDate = date;
-      resolve();
-    });
-  });
-};
-
-const setEndDateFilter = () => {
-  return new Promise((resolve, reject) => {
-    readline.question("Enter End Date Filter: ", (date) => {
-      dateFilter.endDate = date;
-      resolve();
-    });
-  });
-};
-
 // Check if article is in range of dates provided by date filter
 const inRange = (date, startRange, endRange) => {
   let storyDate = new Date(date);
@@ -318,7 +319,13 @@ const inRange = (date, startRange, endRange) => {
   return storyDate >= StartDate && storyDate <= endDate;
 };
 
-// Filter stories by date, takes in array of stories
+/**
+ * Takes in an array of articles. Meant to be partially sorted from text filter
+ * but does not have to be. Filters the input array based on the date range filters
+ *
+ * @param {array} input Partially sorted array
+ * @returns fully sorted array
+ */
 const filterStoriesDate = (input) => {
   if (dateFilter.startDate !== "" && dateFilter.endDate !== "") {
     stories = input.filter(function (story) {
@@ -333,25 +340,181 @@ const filterStoriesDate = (input) => {
   }
 };
 
-// filter stories on all criteria (author, title, date range)
+/**
+ * Complete Filter function. Filters based on text values first (title and author)
+ * and then passes the partly filtered array through the date range filter
+ * for a fully filtered array based on all critera
+ *
+ * @returns filtered array of articles
+ */
 const filter = () => {
   var ret = filterStoriesText();
   return filterStoriesDate(ret);
 };
 
-// Clear all filters
-const clearFilters = () => {
-  textFilter.TITLE = "";
-  textFilter.AUTHOR = "";
-  dateFilter.startDate = "";
-  dateFilter.endDate = setDate();
+/************************ User Input Setters ************************/
+/**
+ * These functions are used when the user is using the CLI. Due to the nature
+ * of the CLI and readline, these functions return a promise, allowing the code
+ * to be run asynchronously.
+ *
+ * Each function takes in input from the user via the CLI and uses the appropriate
+ * setter method to set the data objects based on the user input. They essentially do
+ * the same thing as the above setter methods but through readline and the CLI and
+ * can be ran asynchronously
+ */
+const userSetTitle = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Name: ", (name) => {
+      setTitle(name);
+      resolve();
+    });
+  });
 };
 
-const readline = require("readline").createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+const userSetAuthor = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Author Name: ", (author) => {
+      setAuthor(author);
+      resolve();
+    });
+  });
+};
 
+const userSetPublic = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Set Public(T/F): ", (public) => {
+      setPublic(public);
+      resolve();
+    });
+  });
+};
+
+const userSetContent = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Story Content: ", (content) => {
+      setContent(content);
+      resolve();
+    });
+  });
+};
+
+const userSetTitleFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Headline Filter: ", (headline) => {
+      setTitleFilter(headline);
+      resolve();
+    });
+  });
+};
+
+const userSetAuthorFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Author Filter: ", (author) => {
+      setAuthorFilter(author);
+      resolve();
+    });
+  });
+};
+
+const userSetStartDateFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter Start Date Filter: ", (startDate) => {
+      setStartDateFilter(startDate);
+      resolve();
+    });
+  });
+};
+
+const userSetEndDateFilter = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter End Date Filter: ", (endDate) => {
+      setEndDateFilter(endDate);
+      resolve();
+    });
+  });
+};
+
+/*************** User Input Update Functions ********************/
+/**
+ * These functions update the file based on user input from the CLI.
+ */
+
+const userUpdateHeadline = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Title: ", async (title) => {
+      await updateHeadline(title);
+      resolve();
+    });
+  });
+};
+
+// Updates news story content
+const userUpdateContent = () => {
+  return new Promise((resolve, reject) => {
+    readline.question("Enter New Conent: ", async (content) => {
+      await updateContent(content);
+      resolve();
+    });
+  });
+};
+
+/****************** Menu Functions *********************/
+/**
+ * These functions are called by the menu input to fully implement the
+ * CLI functionality. They are async functions that wait for user input
+ * before moving to the next prompt.
+ */
+const writeStory = async () => {
+  await userSetTitle();
+  await userSetAuthor();
+  await userSetPublic();
+  await userSetContent();
+  setDate();
+  newStory();
+  event.emit("storyCreated");
+  console.log("Story Created!\n");
+  menu();
+};
+
+const updateStoryTitle = async () => {
+  await getStory();
+  await userUpdateHeadline();
+  console.log("Title Changed!\n");
+  menu();
+};
+
+const updateStoryContent = async () => {
+  await getStory();
+  await userUpdateContent();
+  console.log("Content Changed!\n");
+  menu();
+};
+
+const deleteNewsStory = async () => {
+  await getStory();
+  await deleteStory();
+  event.emit("storyDeleted");
+  console.log("Story Deleted!\n");
+  menu();
+};
+
+const fitlerStories = async () => {
+  await userSetTitleFilter();
+  await userSetAuthorFilter();
+  await userSetStartDateFilter();
+  await userSetEndDateFilter();
+  console.log("Filtered Stories:");
+  console.log(filter());
+  clearFilters();
+  console.log();
+  menu();
+};
+
+/**
+ * Main Menu takes input from user and handles next step based
+ * on that input.
+ */
 const menu = () => {
   readline.question(
     `Please choose from the following:
@@ -362,7 +525,7 @@ const menu = () => {
 5. Search for a new story
 0. Quit
 Choice: `,
-    (input) => {
+    async (input) => {
       if (input == 1) {
         writeStory();
       }
@@ -382,78 +545,10 @@ Choice: `,
         event.emit("exit");
         readline.close();
       }
-      //readline.close();
     }
   );
 };
 
-const getStory = () => {
-  for (var i in data.articles) {
-    console.log(i + ": " + data.articles[i].TITLE);
-  }
-  return new Promise((resolve, reject) => {
-    readline.question("Choose an article to update: ", (input) => {
-      data.selected = input;
-      resolve();
-    });
-  });
-};
-/************* Write Story Functions **************/
-
-const writeStory = async () => {
-  await setTitle();
-  await setAuthor();
-  await setPublic();
-  await setContent();
-  setDate();
-  newStory();
-  //   await loadData(file);
-  event.emit("storyCreated");
-  console.log("Story Created!");
-  menu();
-};
-
-/************** Update Title Functions ***************/
-
-const updateStoryTitle = async () => {
-  await getStory();
-  await updateHeadline();
-  //   await loadData(file);
-  console.log("Title Changed!");
-  menu();
-};
-
-/************** Update Content Functions ***************/
-
-const updateStoryContent = async () => {
-  await getStory();
-  await updateContent();
-  //   await loadData(file);
-  console.log("Content Changed!");
-  menu();
-};
-
-/************** Delete Story Functions ***************/
-
-const deleteNewsStory = async () => {
-  await getStory();
-  await deleteStory();
-  event.emit("storyDeleted");
-  console.log("Story Deleted!");
-  menu();
-};
-
-const fitlerStories = async () => {
-  await setTitleFilter();
-  await setAuthorFilter();
-  await setStartDateFilter();
-  await setEndDateFilter();
-  console.log("Filtered Stories:");
-  console.log(filter());
-  clearFilters();
-  menu();
-};
-
 event.emit("start");
-loadData(file);
+loadData();
 menu();
