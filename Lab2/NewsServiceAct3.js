@@ -119,11 +119,14 @@ const newStory = () => {
  */
 const getStory = () => {
   for (var i in data.articles) {
-    console.log(i + ": " + data.articles[i].TITLE);
+    console.log(`${parseInt(i) + 1}: ` + data.articles[i].TITLE);
   }
   return new Promise((resolve, reject) => {
     readline.question("Choose an article to update: ", (input) => {
-      data.selected = input;
+      data.selected = parseInt(input) - 1;
+      if (data.selected > data.articles.length - 1) {
+        reject();
+      }
       resolve();
     });
   });
@@ -478,21 +481,36 @@ const writeStory = async () => {
 };
 
 const updateStoryTitle = async () => {
-  await getStory();
+  try {
+    await getStory();
+  } catch (err) {
+    console.log("Invalid selection. Reverting to main menu");
+    menu();
+  }
   await userUpdateHeadline();
   console.log("Title Changed!\n");
   menu();
 };
 
 const updateStoryContent = async () => {
-  await getStory();
+  try {
+    await getStory();
+  } catch (err) {
+    console.log("Invalid selection. Reverting to main menu");
+    menu();
+  }
   await userUpdateContent();
   console.log("Content Changed!\n");
   menu();
 };
 
 const deleteNewsStory = async () => {
-  await getStory();
+  try {
+    await getStory();
+  } catch (err) {
+    console.log("Invalid selection. Reverting to main menu");
+    menu();
+  }
   await deleteStory();
   event.emit("storyDeleted");
   console.log("Story Deleted!\n");
@@ -526,24 +544,28 @@ const menu = () => {
 0. Quit
 Choice: `,
     async (input) => {
-      if (input == 1) {
-        writeStory();
-      }
-      if (input == 2) {
-        updateStoryTitle();
-      }
-      if (input == 3) {
-        updateStoryContent();
-      }
-      if (input == 4) {
-        deleteNewsStory();
-      }
-      if (input == 5) {
-        fitlerStories();
-      }
-      if (input == 0) {
-        event.emit("exit");
-        readline.close();
+      switch (input) {
+        case "1":
+          writeStory();
+          break;
+        case "2":
+          updateStoryTitle();
+          break;
+        case "3":
+          updateStoryContent();
+          break;
+        case "4":
+          deleteNewsStory();
+          break;
+        case "5":
+          fitlerStories();
+          break;
+        case "0":
+          readline.close();
+          break;
+        default:
+          console.log("Invalid Selection. Please Enter 0-5:");
+          menu();
       }
     }
   );

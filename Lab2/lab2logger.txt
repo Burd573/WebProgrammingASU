@@ -60,3 +60,24 @@ Story Deleted
 Program Closed
 Program Started
 Program Closed
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Story Created. Written to: news1.json
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
+Program Started
