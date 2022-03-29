@@ -1,30 +1,46 @@
 const fs = require("fs");
 
+// Set the date of the new story to the current day and format date
+const setDate = () => {
+  var date = new Date();
+  var year = date.getFullYear();
+
+  var month = (date.getMonth() + 1).toString();
+  month = month.length > 1 ? month : "0" + month;
+
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : "0" + day;
+
+  ret = month + "-" + day + "-" + year;
+  return ret;
+};
+
 // News story object, can be modified to add new story
 const story = {
-  TITLE: "Title",
-  AUTHOR: "author",
-  DATE: "date",
-  PUBLIC: "f",
-  CONTENT: "content",
+  TITLE: "",
+  AUTHOR: "",
+  DATE: setDate(),
+  PUBLIC: "",
+  CONTENT: "",
 };
 
 // Data retrieved from file, contains all news stories stored in file
 const data = {
   contents: "data",
   articles: [],
+  selected: "",
 };
 
 // Filters author and title from news stories
-const filterDataText = {
+const textFilter = {
   AUTHOR: "",
   TITLE: "",
 };
 
 // sets date range to filter from news stories
-const filterDataDate = {
+const dateFilter = {
   startDate: "",
-  endDate: "",
+  endDate: setDate(),
 };
 
 // Loads news stories data from file
@@ -50,20 +66,6 @@ const setAuthor = (input) => {
   story.AUTHOR = input;
 };
 
-// Set the date of the new story to the current day and format date
-const setDate = () => {
-  var date = new Date();
-  var year = date.getFullYear();
-
-  var month = (date.getMonth() + 1).toString();
-  month = month.length > 1 ? month : "0" + month;
-
-  var day = date.getDate().toString();
-  day = day.length > 1 ? day : "0" + day;
-
-  story.DATE = month + "-" + day + "-" + year;
-};
-
 // Set the public flag of the new story
 const setPublic = (input) => {
   story.PUBLIC = input;
@@ -72,6 +74,22 @@ const setPublic = (input) => {
 // Set the content of the new story
 const setContent = (input) => {
   story.CONTENT = input;
+};
+
+const setAuthorFilter = (authorFilter) => {
+  textFilter.AUTHOR = authorFilter;
+};
+
+const setTitleFilter = (titleFilter) => {
+  textFilter.TITLE = titleFilter;
+};
+
+const setStartDateFilter = (startDateFilter) => {
+  dateFilter.startDate = startDateFilter;
+};
+
+const setEndDateFilter = (endDateFilter) => {
+  dateFilter.endDate = endDateFilter;
 };
 
 // Updates news story headline
@@ -95,35 +113,25 @@ const deleteStory = (output, index) => {
 /*************** Filter Text Functions ************************/
 // Sets the title and author filters
 const setFilters = (title, author) => {
-  filterDataText.TITLE = title;
-  filterDataText.AUTHOR = author;
-};
-
-// Set only title filter
-const setTitleFilter = (title) => {
-  filterDataText.TITLE = title;
-};
-
-// Set only author filter
-const setAuthorFilter = (author) => {
-  filterDataText.AUTHOR = author;
+  textFilter.TITLE = title;
+  dateFilter.AUTHOR = author;
 };
 
 // Clear only title filter
 const clearTitleFilter = () => {
-  filterDataText.TITLE = "";
+  textFilter.TITLE = "";
 };
 
 // clear only author filter
 const clearAuthorFilter = () => {
-  filterDataText.AUTHOR = "";
+  textFilter.AUTHOR = "";
 };
 
 // Filter all stories by title and author, returns filtered array of stories
 const filterStoriesText = () => {
   stories = data.articles.filter(function (story) {
-    for (var key in filterDataText) {
-      if (!story[key].includes(filterDataText[key])) {
+    for (var key in textFilter) {
+      if (!story[key].includes(textFilter[key])) {
         return false;
       }
     }
@@ -135,8 +143,8 @@ const filterStoriesText = () => {
 /*************** Filter Date Functions ************************/
 // Set the date filter range
 const setDateFilter = (startDate, endDate) => {
-  filterDataDate.startDate = startDate;
-  filterDataDate.endDate = endDate;
+  dateFilter.startDate = startDate;
+  dateFilter.endDate = endDate;
 };
 
 // Check if article is in range of dates provided by date filter
@@ -150,15 +158,26 @@ const inRange = (date, startRange, endRange) => {
 
 // Filter stories by date, takes in array of stories
 const filterStoriesDate = (input) => {
-  stories = input.filter(function (story) {
-    if (
-      !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
-    ) {
-      return false;
-    }
-    return true;
-  });
-  return stories;
+  // stories = input.filter(function (story) {
+  //   if (
+  //     !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
+  //   ) {
+  //     return false;
+  //   }
+  //   return true;
+  // });
+  // return stories;
+  if (dateFilter.startDate !== "" && dateFilter.endDate !== "") {
+    stories = input.filter(function (story) {
+      if (!inRange(story.DATE, dateFilter.startDate, dateFilter.endDate)) {
+        return false;
+      }
+      return true;
+    });
+    return stories;
+  } else {
+    return input;
+  }
 };
 
 // filter stories on all criteria (author, title, date range)
@@ -169,39 +188,8 @@ const filter = () => {
 
 // Clear all filters
 const clearFilters = () => {
-  filterDataText.TITLE = "";
-  filterDataText.AUTHOR = "";
-  filterDataDate.startDate = "";
-  filterDataDate.endDate = "";
+  textFilter.TITLE = "";
+  textFilter.AUTHOR = "";
+  dateFilter.startDate = "";
+  dateFilter.endDate = setDate();
 };
-
-/*************** Testing ************************/
-loadData("news1.json");
-// setTitle("Suns Win!");
-// setAuthor("Chris Burdett");
-// setDate();
-// setContent("Suns are the champions!");
-// newStory(story, "news1.json");
-//updateHeadline("news1.json", data.articles.length - 1, "Newer Title");
-//updateContent("news1.json", data.articles.length - 1, "New Content");
-//deleteStory("news1.json", data.articles.length - 1);
-
-// setFilters("", "Igor");
-//setAuthorFilter("Igor");
-// filterStoriesText();
-// clearFilters();
-
-//setDateFilter("08-01-2018", "09-02-2018");
-// console.log(filterDataDate.startDate);
-// console.log(filterDataDate.endDate);
-
-// console.log(
-//   inRange("09-01-2018", filterDataDate.startDate, filterDataDate.endDate)
-// );
-
-//filterStoriesDate();
-
-// console.log(inRange(data.articles[0].DATE, "08/10/2018"));
-// console.log(filterData.startDate);
-
-console.log(filter());

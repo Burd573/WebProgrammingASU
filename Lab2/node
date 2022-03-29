@@ -1,4 +1,4 @@
 node
-.load NewsServiceAct2.js
+.load NewsServiceAct1.js
 
-node NewsServiceAct2.js
+.load NewsServiceAct1_test.js
