@@ -158,15 +158,6 @@ const inRange = (date, startRange, endRange) => {
 
 // Filter stories by date, takes in array of stories
 const filterStoriesDate = (input) => {
-  // stories = input.filter(function (story) {
-  //   if (
-  //     !inRange(story.DATE, filterDataDate.startDate, filterDataDate.endDate)
-  //   ) {
-  //     return false;
-  //   }
-  //   return true;
-  // });
-  // return stories;
   if (dateFilter.startDate !== "" && dateFilter.endDate !== "") {
     stories = input.filter(function (story) {
       if (!inRange(story.DATE, dateFilter.startDate, dateFilter.endDate)) {

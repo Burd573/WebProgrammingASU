@@ -60,6 +60,5 @@ clearFilters();
 console.log("**********************************");
 console.log("Filtering stories by Author: Igor, Title: None, Date Range: None");
 setAuthorFilter("Igor");
-//setDateFilter("08-01-2018", "09-02-2018");
 console.log(filter());
 clearFilters();
