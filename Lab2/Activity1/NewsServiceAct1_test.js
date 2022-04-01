@@ -1,5 +1,5 @@
 /*************** Testing ************************/
-loadData("news1.json");
+loadData("news.json");
 
 console.log("**********************************");
 console.log("Current Stories");
@@ -13,7 +13,7 @@ setTitle("Suns Win!");
 setAuthor("Chris Burdett");
 setDate();
 setContent("Suns are the champions!");
-newStory(story, "news1.json");
+newStory(story, "news.json");
 
 console.log("**********************************");
 console.log("Current Stories");
@@ -23,16 +23,16 @@ for (var i in data.articles) {
 
 console.log("**********************************");
 console.log("Updating Headline of last story: Newer Title");
-updateHeadline("news1.json", data.articles.length - 1, "Newer Title");
+updateHeadline("news.json", data.articles.length - 1, "Newer Title");
 console.log("Updating Content of last story: New Content");
-updateContent("news1.json", data.articles.length - 1, "New Content");
+updateContent("news.json", data.articles.length - 1, "New Content");
 console.log("**********************************");
 console.log("Updated story");
 console.log(data.articles[i]);
 
 console.log("**********************************");
 console.log("Deleting last story");
-deleteStory("news1.json", data.articles.length - 1);
+deleteStory("news.json", data.articles.length - 1);
 console.log("**********************************");
 console.log("Current Stories");
 for (var i in data.articles) {

@@ -1,4 +1,0 @@
-node
-.load NewsServiceAct1.js
-
-.load NewsServiceAct1_test.js

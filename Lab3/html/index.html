@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <title>Grocery List</title>
+  </head>
+  <body>
+    <h2>Grocery List</h2>
+    <p></p>
+    <form action="groceries" method="post">
+      <table border="1" cols="2">
+        <tbody>
+          <tr>
+            <th>Field Name</th>
+            <th>Field Value</th>
+          </tr>
+          <tr>
+            <td>Product Name</td>
+            <td>
+              <input type="text" name="name" />
+            </td>
+          </tr>
+          <tr>
+            <td>Product Brand</td>
+            <td><input type="text" name="brand" /></td>
+          </tr>
+          <tr>
+            <td>Quantity</td>
+            <td><input type="text" name="quantity" /></td>
+          </tr>
+          <tr>
+            <td>Aisle</td>
+            <td><input type="text" name="aisle" /></td>
+          </tr>
+          <tr>
+            <td>Diet</td>
+            <td><input type="text" name="custom" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <input type="submit" value="Add" />
+    </form>
+    <p></p>
+    <p></p>
+    <form action="my_groceries" method="get">
+      <table border="1" cols="2">
+        <tbody>
+          <tr>
+            <th>Field Name</th>
+            <th>Field Value</th>
+          </tr>
+          <tr>
+            <td>Aisle</td>
+            <td><input type="text" name="aisle" /></td>
+          </tr>
+          <tr>
+            <td>Diet</td>
+            <td><input type="text" name="custom" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <input type="submit" value="Search" />
+    </form>
+    <p></p>
+  </body>
+</html>

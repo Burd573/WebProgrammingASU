@@ -5,7 +5,7 @@ const readline = require("readline").createInterface({
   output: process.stdout,
 });
 
-const file = "news1.json";
+const file = "news.json";
 
 /**
  * Load the data from the file and store in the data object.
@@ -258,7 +258,7 @@ const deleteStory = () => {
 const filterStoriesText = () => {
   stories = data.articles.filter(function (story) {
     for (var key in textFilter) {
-      if (!story[key].includes(textFilter[key])) {
+      if (!story[key].toLowerCase().includes(textFilter[key].toLowerCase())) {
         return false;
       }
     }
