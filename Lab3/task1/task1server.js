@@ -50,7 +50,9 @@ http
       if (urlObj.pathname == "/") {
         fs.readFile(ROOT_DIR + "index.html", (err, data) => {
           if (err) {
-            res.writeHead(404);
+            res.writeHead(404, {
+              "Content-Type": "text/html",
+            });
             res.end("404 Not Found: " + JSON.stringify(err));
             return;
           }
@@ -66,7 +68,9 @@ http
         });
         res.end(buildTable(msg, rows));
       } else {
-        res.writeHead(404);
+        res.writeHead(404, {
+          "Content-Type": "text/html",
+        });
         res.end("404 Not Found");
       }
     }
@@ -85,10 +89,27 @@ http
         item.custom = params.get("custom");
         for (var i in item) {
           if (item[i] == "") {
-            res.writeHead(400);
+            res.writeHead(400, {
+              "Content-Type": "text/html",
+            });
             res.end(sendRes(`Please enter value for ${i} `));
             return;
           }
+        }
+        if (isNaN(params.get("quantity"))) {
+          res.writeHead(400, {
+            "Content-Type": "text/html",
+          });
+          res.end(sendRes(`Please enter a number for quantity `));
+          return;
+        }
+
+        if (isNaN(params.get("aisle"))) {
+          res.writeHead(400, {
+            "Content-Type": "text/html",
+          });
+          res.end(sendRes(`Please enter a number for aisle `));
+          return;
         }
         writeData();
         res.writeHead(201, {
