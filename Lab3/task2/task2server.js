@@ -56,12 +56,20 @@ http
             res.end("404 Not Found: " + JSON.stringify(err));
             return;
           }
-
           res.writeHead(200);
           res.end(data);
         });
       } else if (urlObj.pathname == "/my_groceries") {
         let filteredItems = getItems(qstr.get("aisle"), qstr.get("custom"));
+
+        if (req.headers.accept == "application/json") {
+          res.writeHead(200, { "Content-Type": "application/json" });
+          res.end(
+            JSON.stringify(getItems(qstr.get("aisle"), qstr.get("custom")))
+          );
+          return;
+        }
+
         let rows = toTableRows(filteredItems);
         res.writeHead(200, {
           "Content-Type": "text/html",
