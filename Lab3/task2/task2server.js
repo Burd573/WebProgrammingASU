@@ -60,6 +60,12 @@ http
       } else if (urlObj.pathname == "/my_groceries") {
         let filteredItems = getItems(qstr.get("aisle"), qstr.get("custom"));
 
+        if (req.headers.accept == "text/plain") {
+          writeHeader(res, 406, "text/plain");
+          res.end(plainText(filteredItems));
+          return;
+        }
+
         // console.log(req.headers.accept);
         if (req.headers.accept == "application/json") {
           writeHeader(res, 200, "application/json");
@@ -148,6 +154,16 @@ const clearItem = () => {
   item.quantity = "";
   item.aisle = "";
   item.custom = "";
+};
+
+const plainText = (input) => {
+  let ret = "";
+  for (var i in input) {
+    ret +=
+      `${input[i].name}    ${input[i].brand}    ${input[i].quantity}    ${input[i].aisle}    ${input[i].custom}` +
+      "\n";
+  }
+  return ret;
 };
 
 const sendRes = (input) => {
