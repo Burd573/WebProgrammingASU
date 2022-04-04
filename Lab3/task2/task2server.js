@@ -50,35 +50,39 @@ http
       if (urlObj.pathname == "/") {
         fs.readFile(ROOT_DIR + "index.html", (err, data) => {
           if (err) {
-            res.writeHead(404, {
-              "Content-Type": "text/html",
-            });
+            writeHeader(res, 404, "text/html");
             res.end("404 Not Found: " + JSON.stringify(err));
             return;
           }
-          res.writeHead(200);
+          writeHeader(res, 200, "text/html");
           res.end(data);
         });
       } else if (urlObj.pathname == "/my_groceries") {
         let filteredItems = getItems(qstr.get("aisle"), qstr.get("custom"));
 
+        // console.log(req.headers.accept);
         if (req.headers.accept == "application/json") {
-          res.writeHead(200, { "Content-Type": "application/json" });
+          writeHeader(res, 200, "application/json");
           res.end(
             JSON.stringify(getItems(qstr.get("aisle"), qstr.get("custom")))
           );
           return;
         }
 
+        if (req.headers.accept == "application/xml") {
+          writeHeader(res, 406, "text/html");
+          res.end(
+            `<html><head><title>Grocery List</title></head><body>
+            <span>This application accepts text/html text/plain or application/json</span></body></html>`
+          );
+          return;
+        }
+
         let rows = toTableRows(filteredItems);
-        res.writeHead(200, {
-          "Content-Type": "text/html",
-        });
+        writeHeader(res, 200, "text/html");
         res.end(buildTable(msg, rows));
       } else {
-        res.writeHead(404, {
-          "Content-Type": "text/html",
-        });
+        writeHeader(res, 404, "text/html");
         res.end("404 Not Found");
       }
     }
@@ -132,6 +136,11 @@ http
     }
   })
   .listen(3000, "localhost");
+
+const writeHeader = (res, sCode, type) => {
+  res.setHeader("Content-Type", type);
+  res.writeHead(sCode);
+};
 
 const clearItem = () => {
   item.name = "";
