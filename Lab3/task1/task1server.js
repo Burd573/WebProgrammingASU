@@ -19,19 +19,20 @@ const data = {
 };
 
 /**
- * Load Data from file. If the file does not exist, create it
+ * Load Data from file. If the file does not exist, create it. If it does exist
+ * store the data in the data object.
  */
 const loadData = () => {
   let exists = fs.existsSync(file);
   if (exists) {
-    console.log("Reading file");
     data.contents = JSON.parse(fs.readFileSync(file));
   } else {
-    console.log("Creating file");
     fs.openSync(file, "w");
   }
 };
-
+/**
+ * Write a new item to groceries.json
+ */
 const writeData = () => {
   loadData();
   data.contents.push(item);
@@ -45,7 +46,8 @@ http
       let qstr = urlObj.searchParams;
 
       /**
-       * Load the form from index.html when url is at homepage
+       * Load the form from index.html when url is at homepage to make sure
+       * data object is up to date
        */
       if (urlObj.pathname == "/") {
         fs.readFile(ROOT_DIR + "index.html", (err, data) => {
@@ -61,7 +63,15 @@ http
           res.end(data);
         });
       } else if (urlObj.pathname == "/my_groceries") {
+        /**
+         * Filter the items of the entire json file by the aisle and brand
+         * and store in filteredItems
+         */
         let filteredItems = getItems(qstr.get("aisle"), qstr.get("custom"));
+        /**
+         * If the accept language is set to text/plain, return the data in the
+         * required format
+         */
         let rows = toTableRows(filteredItems);
         res.writeHead(200, {
           "Content-Type": "text/html",
@@ -80,6 +90,12 @@ http
       req.on("data", (chunk) => {
         itemData += chunk;
       });
+      /**
+       * If the request is a POST request, take the data from the payload and
+       * add it to the item object. Do some error handling on the data and if
+       * everything looks OK, write that item to the json file and send
+       * appropriate response back to the client
+       */
       req.on("end", () => {
         let params = new URLSearchParams(itemData);
         item.name = params.get("name");
@@ -96,6 +112,11 @@ http
             return;
           }
         }
+        /**
+         * Check to see if the value entered for quantity is a number.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid number
+         */
         if (isNaN(params.get("quantity"))) {
           res.writeHead(400, {
             "Content-Type": "text/html",
@@ -103,7 +124,11 @@ http
           res.end(sendRes(`Please enter a number for quantity `));
           return;
         }
-
+        /**
+         * Check to see if the value entered for aisle is a number.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid number
+         */
         if (isNaN(params.get("aisle"))) {
           res.writeHead(400, {
             "Content-Type": "text/html",
@@ -111,7 +136,9 @@ http
           res.end(sendRes(`Please enter a number for aisle `));
           return;
         }
+        // Write the data to the json file
         writeData();
+        // After item is written to client, send apprpriate response to the client
         res.writeHead(201, {
           "Content-Type": "text/html",
         });
@@ -124,15 +151,9 @@ http
     }
   })
   .listen(3000, "localhost");
-
-const clearItem = () => {
-  item.name = "";
-  item.brand = "";
-  item.quantity = "";
-  item.aisle = "";
-  item.custom = "";
-};
-
+/**
+ * html to be returned to the client as a response
+ */
 const sendRes = (input) => {
   let resStart = `
     <html>

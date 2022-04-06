@@ -200,7 +200,7 @@ http
         return;
       }
       /**
-       * If the request is a POST request, taske the data from the payload and
+       * If the request is a POST request, take the data from the payload and
        * add it to the item object. Do some error handling on the data and if
        * everything looks OK, write that item to the json file and send
        * appropriate response back to the client
@@ -332,7 +332,6 @@ const addFavorites = (params, curFavs) => {
 
 /**
  * Helper function to write the header for a response to the client
- *
  */
 const writeHeader = (res, sCode, type) => {
   res.setHeader("Content-Type", type);
