@@ -62,6 +62,46 @@ http
         });
       } else if (urlObj.pathname == "/my_groceries") {
         /**
+         * Check to see if the value entered for aisle is a number.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid number
+         */
+        if (isNaN(qstr.get("aisle"))) {
+          if (req.headers.accept == "application/json") {
+            writeHeader(res, 400, "application/json");
+            res.end(JSON.stringify("Please enter a number for aisle"));
+            return;
+          }
+          if (req.headers.accept == "text/plain") {
+            writeHeader(res, 400, "text/plain");
+            res.end("Please enter a number for aisle");
+            return;
+          }
+          writeHeader(res, 400, "text/html");
+          res.end(sendRes(`Please enter a number for aisle `));
+          return;
+        }
+        /**
+         * Check to see if the value entered for diet is a string.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid string
+         */
+        if (qstr.get("custom") != "" && !isNaN(qstr.get("custom"))) {
+          if (req.headers.accept == "application/json") {
+            writeHeader(res, 400, "application/json");
+            res.end(JSON.stringify("Please enter a string for diet"));
+            return;
+          }
+          if (req.headers.accept == "text/plain") {
+            writeHeader(res, 400, "text/plain");
+            res.end("Please enter a string for diet");
+            return;
+          }
+          writeHeader(res, 400, "text/html");
+          res.end(sendRes("Please enter a string for diet"));
+          return;
+        }
+        /**
          * If the request is a GET request, the path is my_grocieries, and
          * favorites is on in the get request, check the cookies on the browser.
          * If there are favorites stored in the browser, set them in the favorites

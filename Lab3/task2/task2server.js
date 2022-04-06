@@ -25,10 +25,8 @@ const data = {
 const loadData = () => {
   let exists = fs.existsSync(file);
   if (exists) {
-    console.log("Reading file");
     data.contents = JSON.parse(fs.readFileSync(file));
   } else {
-    console.log("Creating file");
     fs.openSync(file, "w");
   }
 };
@@ -62,6 +60,47 @@ http
           res.end(data);
         });
       } else if (urlObj.pathname == "/my_groceries") {
+        /**
+         * Check to see if the value entered for aisle is a number.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid number
+         */
+        if (isNaN(qstr.get("aisle"))) {
+          if (req.headers.accept == "application/json") {
+            writeHeader(res, 400, "application/json");
+            res.end(JSON.stringify("Please enter a number for aisle"));
+            return;
+          }
+          if (req.headers.accept == "text/plain") {
+            writeHeader(res, 400, "text/plain");
+            res.end("Please enter a number for aisle");
+            return;
+          }
+          writeHeader(res, 400, "text/html");
+          res.end(sendRes(`Please enter a number for aisle `));
+          return;
+        }
+        /**
+         * Check to see if the value entered for diet is a string.
+         * If it is not, send response back to the client instructing the
+         * user to enter a valid string
+         */
+        if (qstr.get("custom") != "" && !isNaN(qstr.get("custom"))) {
+          if (req.headers.accept == "application/json") {
+            writeHeader(res, 400, "application/json");
+            res.end(JSON.stringify("Please enter a string for diet"));
+            return;
+          }
+          if (req.headers.accept == "text/plain") {
+            writeHeader(res, 400, "text/plain");
+            res.end("Please enter a string for diet");
+            return;
+          }
+          writeHeader(res, 400, "text/html");
+          res.end(sendRes("Please enter a string for diet"));
+          return;
+        }
+
         /**
          * Filter the items of the entire json file by the aisle and brand
          * and store in filteredItems
@@ -316,5 +355,22 @@ const buildTable = (message, tableRows) => {
 </html>
 `;
 
+  let resTableEmpty = `
+</span>
+<br>
+<br>
+<span>No Items!</span>
+<br>
+<span>
+  Add More: 
+  <a href="http://localhost:3000/">here</a>
+</span>
+</body>
+</html>
+`;
+
+  if (tableRows == "") {
+    return resTableStart + message + resTableEmpty;
+  }
   return resTableStart + message + resTableMid + tableRows + resTableEnd;
 };

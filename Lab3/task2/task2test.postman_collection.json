@@ -1,0 +1,380 @@
+{
+	"info": {
+		"_postman_id": "cf2dfafa-7cc6-4d03-9445-2f00c86d8c4e",
+		"name": "task2test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1: GET working, subset results",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_grocerieshttps://heal3.poly.asu.edu/ser421lab3/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_grocerieshttps:",
+						"",
+						"heal3.poly.asu.edu",
+						"ser421lab3",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1: Get working, no results",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=99&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": "99"
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "1: Get error",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=j&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": "j"
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2: GET working, subset results",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=1&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": "1"
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2: GET working, no results",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=8&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": "8"
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2: GET error",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=j&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": "j"
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3: GET working, subset results",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=&custom=none",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": ""
+						},
+						{
+							"key": "custom",
+							"value": "none"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3: GET working, no results",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=&custom=liquid",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": ""
+						},
+						{
+							"key": "custom",
+							"value": "liquid"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3: Get error",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/plain",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=&custom=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": ""
+						},
+						{
+							"key": "custom",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4: GET no params, xml",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/my_groceries?aisle=&custom=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"my_groceries"
+					],
+					"query": [
+						{
+							"key": "aisle",
+							"value": ""
+						},
+						{
+							"key": "custom",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
