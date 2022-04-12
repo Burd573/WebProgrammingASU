@@ -1,0 +1,17 @@
+{
+  "name": "lab4",
+  "version": "1.0.0",
+  "description": "SER 421 Lab 4: Express",
+  "type": "module",
+  "main": "Lab4",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node activity1/NewsAPI.js"
+  },
+  "author": "Chris Burdett",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "express": "^4.17.3"
+  }
+}
