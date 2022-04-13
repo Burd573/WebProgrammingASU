@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h3>Add Story</h3>
+    <form name="search" method="POST" action="/addStory">
+      <input
+        id="author"
+        type="hidden"
+        name="author"
+        value="<%- user.userName %>"
+      />
+      <br />
+      <label for="title">Title</label>
+      <input id="title" type="text" name="title" />
+      <br />
+      <label for="public">Public</label>
+      <input id="public" type="radio" name="public" value="T" />
+
+      <label for="public">Private</label>
+      <input id="public" type="radio" name="public" value="F" />
+      <br />
+      <label for="content">Content</label>
+      <input id="content" type="text" name="content" />
+      <br />
+      <input type="submit" value="Add Story" />
+    </form>
+
+    <form action="http://localhost:3003" method="GET">
+      <input type="submit" value="Home" />
+    </form>
+  </body>
+</html>

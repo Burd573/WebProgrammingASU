@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Welcome <%- user.userName %></h1>
+    <h2><%- params.title %></h2>
+    <p><%- params.content %></p>
+    <p><%- params.author %></p>
+    <p><%- params.date %></p>
+
+    <form action="http://localhost:3003" method="GET">
+      <input type="submit" value="Home" />
+    </form>
+    <% if(user.userName == "guest"){ %>
+    <form action="/login" method="get">
+      <input type="Submit" value="Login" name="login" />
+    </form>
+    <% }%>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Welcome <%- user.userName %></h1>
+    <h2>News Stories</h2>
+    <% if(accessableStories.length > 0){ %>
+    <h3>Available Stories</h3>
+    <% for(var i in accessableStories){ %>
+
+    <a href="http://localhost:3003/stories?title=<%= accessableStories[i].TITLE %>&author=<%= accessableStories[i].AUTHOR %>&date=<%= accessableStories[i].DATE %>&content=<%= accessableStories[i].CONTENT %>"</a>
+    <%- accessableStories[i].TITLE %></a>
+    <br />
+    <% }%> <% }%> <% if(lockedStories.length > 0){ %>
+    <h3>Locked Stories</h3>
+    <% for(var i in lockedStories){ %>
+    <p><%- lockedStories[i].TITLE %></p>
+    <% }%> <% }%>
+
+
+      <% if(user.role == "Reporter"){ %>
+      <form name="edit" action="/editStories" method="get">
+        <input type="Submit" value="Edit Story" name="edit" />
+      </form>
+      <form name="add" action="/addStory" method="get">
+        <input type="Submit" value="Add Story" name="add" />
+      </form>
+      <% }%>
+    <% if(user.userName == "guest"){ %>
+    <form action="/login" method="get">
+      <input type="Submit" value="Login" name="login" />
+    </form>
+    <% } else {%>
+      <form action="/logout" method="get">
+        <input type="Submit" value="Logout" name="logout" />
+      </form>
+    <% }%>
+  </body>
+</html>

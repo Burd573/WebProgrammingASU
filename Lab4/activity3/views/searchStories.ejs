@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form name="search" method="GET" action="/stories">
+      <table>
+        <tbody>
+          <tr>
+            <th>Field Name</th>
+            <th>Field Value</th>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td>
+              <input type="text" name="author" />
+            </td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>
+              <input type="text" name="title" />
+            </td>
+          </tr>
+          <tr>
+            <td>Start Date</td>
+            <td>
+              <input type="text" name="startDate" />
+            </td>
+          </tr>
+          <tr>
+            <td>End Date</td>
+            <td>
+              <input type="text" name="endDate" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <input type="submit" value="Search" />
+    </form>
+  </body>
+</html>
