@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <% if(data.length > 0){ %> 
+    <% if(type.headline){%>
+        <form action="updateHeadline" method="post">
+    <% }%>
+    <% if(type.content){%>
+        <form action="updateContent" method="post">
+    <% }%>
+    <% if(type.delete){%>
+        <form action="deleteStory" method="post">
+    <% }%>
+      <table border="1">
+        <tbody>
+          <th>Selection</th>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Date</th>
+          <th>Content</th>
+          <% for(var i in data){ %>
+          <tr>
+            <td>
+              <input type="checkbox" id="selected" name="selected" value="<%- i%>" />
+            </td>
+            <td><%- data[i].TITLE %></td>
+            <td><%- data[i].AUTHOR %></td>
+            <td><%- data[i].DATE %></td>
+            <td><%- data[i].CONTENT %></td>
+          </tr>
+          <% }%>
+        </tbody>
+      </table>
+      <% if(type.headline){ %>
+      <label for="newHl">Enter Headline</label>
+      <input id="newHl" type="text" name="headline" />
+      <input type="submit"  value="Update Headline"/>
+      <% }%>
+      <% if(type.content){ %>
+        <label for="newContent">Enter Content</label>
+        <input id="newContent" type="text" name="content" />
+        <input type="submit"  value="Update Content"/>
+        <% }%>
+    <% if(type.delete){ %>
+        <input type="submit"  value="Delete Story"/>
+    <% }%>
+    </form>
+    <% }%>
+  </body>
+</html>

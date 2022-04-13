@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Welcome <%- userName %> </h1>
+    <h2>News Stories</h2>
+    <form name="search" method="GET" action="/stories">
+      <h3>Search Stories</h3>
+      <table>
+        <tbody>
+          <tr>
+            <th>Field Name</th>
+            <th>Field Value</th>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td>
+              <input type="text" name="author" />
+            </td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>
+              <input type="text" name="title" />
+            </td>
+          </tr>
+          <tr>
+            <td>Start Date</td>
+            <td>
+              <input type="text" name="startDate" />
+            </td>
+          </tr>
+          <tr>
+            <td>End Date</td>
+            <td>
+              <input type="text" name="endDate" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <input type="submit" value="Search" />
+    </form>
+    <h3>Edit Stories</h3>
+    <form name="edit" method="GET" action="/select">
+      <form name="search" method="GET" action="/select">
+        <input type="submit" value="Headline" name="headline" />
+      </form>
+      <form name="search" method="GET" action="/select">
+        <input type="submit" value="Content" name="content" />
+      </form>
+      <form name="search" method="GET" action="/select">
+        <input type="submit" value="Delete" name="delete" />
+      </form>
+      <form name="search" method="POST" action="/addStory">
+        <h3>Add Story</h3>
+        <table>
+          <tbody>
+            <tr>
+              <th>Field Name</th>
+              <th>Field Value</th>
+            </tr>
+            <tr>
+              <td><label for="author">Author</label></td>
+              <td>
+                <input id="author" type="text" name="author" />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="title">Title</label></td>
+              <td>
+                <input id="title" type="text" name="title" />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="public">Public</label></td>
+              <td>
+                <input id="public" type="text" name="public" />
+              </td>
+            </tr>
+            <tr>
+              <td><label for="content">Content</label></td>
+              <td>
+                <input id="content" type="text" name="content" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="submit" value="Add Story" />
+      </form>
+  </body>
+</html>

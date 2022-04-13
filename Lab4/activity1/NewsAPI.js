@@ -1,6 +1,5 @@
 import * as newsService from "../NewsService.js";
 import express from "express";
-// import bodyParser from "body-parser";
 var app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
