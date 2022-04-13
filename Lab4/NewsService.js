@@ -219,3 +219,105 @@ export const clearFilters = () => {
   dateFilter.startDate = "";
   dateFilter.endDate = setDate();
 };
+
+export const getAllStories = () => {
+  loadData();
+  return data.articles;
+};
+
+export const getAvailableStories = (role, userName) => {
+  loadData();
+  if (role == "guest") {
+    let stories = data.articles.filter(function (story) {
+      return story.PUBLIC == "T";
+    });
+    return stories;
+  }
+  if (role == "Subscriber") {
+    return data.articles;
+  }
+  if (role == "Reporter") {
+    let stories = data.articles.filter(function (story) {
+      if (story.AUTHOR.toLowerCase() == userName.toLowerCase()) {
+        return true;
+      }
+      if (story.PUBLIC == "T") {
+        return true;
+      }
+      return false;
+    });
+    return stories;
+  }
+};
+
+export const getReporterStories = (role, userName) => {
+  loadData();
+
+  if (role == "Reporter") {
+    let stories = data.articles.filter(function (story) {
+      return story.AUTHOR.toLowerCase() == userName.toLowerCase();
+    });
+    return stories;
+  }
+};
+
+export const getStoriesFiltered = (
+  role,
+  title,
+  author,
+  startDate,
+  endDate,
+  userName
+) => {
+  loadData();
+  setFilters(title, author);
+  setDateFilter(startDate, endDate);
+  let filtered = filter();
+  if (role == "guest") {
+    let stories = filtered.filter(function (story) {
+      return story.PUBLIC == "T";
+    });
+    return stories;
+  }
+
+  if (role == "Subscriber") {
+    return filtered;
+  }
+
+  if (role == "Reporter") {
+    let stories = filtered.filter(function (story) {
+      if (story.AUTHOR.toLowerCase() == userName.toLowerCase()) {
+        return true;
+      }
+      if (story.PUBLIC == "T") {
+        return true;
+      }
+      return false;
+    });
+    return stories;
+  }
+};
+
+export const compareStories = (story1, story2) => {
+  const keys1 = Object.keys(story1);
+  const keys2 = Object.keys(story2);
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+  for (let key of keys1) {
+    if (story1[key] !== story2[key]) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const getIndex = (title) => {
+  loadData();
+  for (var i in data.articles) {
+    if (data.articles[i].TITLE == title) {
+      return i;
+    }
+  }
+  return "error";
+};

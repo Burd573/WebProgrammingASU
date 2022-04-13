@@ -52,10 +52,18 @@
     <% }%>
     </form>
     <% }%>
-    <% if(user.userName == "guest"){ %>
-      <form action="/login" method="get">
-        <input type="Submit" value="Login" name="login">
-      </form>
-      <% }%>
+
+    <form action="http://localhost:3003" method="GET">
+      <input type="submit" value="Home" />
+    </form>
+      <% if(user.userName == "guest"){ %>
+        <form action="/login" method="get">
+          <input type="Submit" value="Login" name="login" />
+        </form>
+        <% } else {%>
+          <form action="/logout" method="get">
+            <input type="Submit" value="Logout" name="logout" />
+          </form>
+        <% }%>
   </body>
 </html>

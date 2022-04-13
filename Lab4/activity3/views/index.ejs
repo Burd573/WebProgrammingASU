@@ -9,18 +9,34 @@
   <body>
     <h1>Welcome <%- user.userName %></h1>
     <h2>News Stories</h2>
-    <% if(accessableStories.length > 0){ %>
-    <h3>Available Stories</h3>
-    <% for(var i in accessableStories){ %>
+    <% if(editStories != undefined){ %>
+      <h3>Modifiable Stories</h3>
+      <% for(var i in editStories){ %>
+        <form action="/deleteStory" method="post">
+        <a href="http://localhost:3003/stories?title=<%= editStories[i].TITLE %>&author=<%= editStories[i].AUTHOR %>&date=<%= editStories[i].DATE %>&content=<%= editStories[i].CONTENT %>"</a>
+        <%- editStories[i].TITLE %></a>
+        <button type="submit" name="title" value="<%= editStories[i].TITLE %>">Delete</button>
+      </form>
+        <br />
+      <% }%> 
 
-    <a href="http://localhost:3003/stories?title=<%= accessableStories[i].TITLE %>&author=<%= accessableStories[i].AUTHOR %>&date=<%= accessableStories[i].DATE %>&content=<%= accessableStories[i].CONTENT %>"</a>
-    <%- accessableStories[i].TITLE %></a>
-    <br />
-    <% }%> <% }%> <% if(lockedStories.length > 0){ %>
-    <h3>Locked Stories</h3>
-    <% for(var i in lockedStories){ %>
-    <p><%- lockedStories[i].TITLE %></p>
-    <% }%> <% }%>
+    <% }%> 
+    <% if(readStories.length > 0){ %>
+      <h3>Available Stories</h3>
+      <% for(var i in readStories){ %>
+
+        <a href="http://localhost:3003/stories?title=<%= readStories[i].TITLE %>&author=<%= readStories[i].AUTHOR %>&date=<%= readStories[i].DATE %>&content=<%= readStories[i].CONTENT %>"</a>
+        <%- readStories[i].TITLE %></a>
+        <br />
+      <% }%> 
+
+    <% }%> 
+    <% if(lockedStories.length > 0){ %>
+        <h3>Locked Stories</h3>
+        <% for(var i in lockedStories){ %>
+        <p><%- lockedStories[i].TITLE %></p>
+      <% }%> 
+    <% }%>
 
 
       <% if(user.role == "Reporter"){ %>

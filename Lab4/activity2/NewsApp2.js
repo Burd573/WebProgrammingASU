@@ -4,7 +4,7 @@ import session from "express-session";
 
 var app = express();
 app.set("view engine", "ejs");
-app.set("views", "activity2/views");
+app.set("views", "views");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(

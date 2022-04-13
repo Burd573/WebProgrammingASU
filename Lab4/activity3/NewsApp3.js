@@ -29,6 +29,10 @@ app.get("/", function (req, res) {
     req.session.role,
     req.session.userName
   );
+  let editStories = newsService.getReporterStories(
+    req.session.role,
+    req.session.userName
+  );
 
   let accessableStories = allStories.filter(function (story) {
     return availableStories.some(function (aStory) {
@@ -42,10 +46,21 @@ app.get("/", function (req, res) {
     });
   });
 
+  let readStories = accessableStories;
+
+  if (req.session.role == "Reporter") {
+    readStories = accessableStories.filter(function (story) {
+      return !editStories.some(function (aStory) {
+        return newsService.compareStories(story, aStory);
+      });
+    });
+  }
+
   res.render("index", {
     user: req.session,
-    accessableStories: accessableStories,
+    readStories: readStories,
     lockedStories: lockedStories,
+    editStories: editStories,
   });
 });
 
@@ -63,6 +78,10 @@ app.get("/logout", function (req, res) {
     req.session.role,
     req.session.userName
   );
+  let editStories = newsService.getReporterStories(
+    req.session.role,
+    req.session.userName
+  );
 
   let accessableStories = allStories.filter(function (story) {
     return availableStories.some(function (aStory) {
@@ -76,10 +95,21 @@ app.get("/logout", function (req, res) {
     });
   });
 
+  let readStories = accessableStories;
+
+  if (req.session.role == "Reporter") {
+    readStories = accessableStories.filter(function (story) {
+      return !editStories.some(function (aStory) {
+        return newsService.compareStories(story, aStory);
+      });
+    });
+  }
+
   res.render("index", {
     user: req.session,
-    accessableStories: accessableStories,
+    readStories: readStories,
     lockedStories: lockedStories,
+    editStories: editStories,
   });
 });
 
@@ -151,14 +181,9 @@ app.post("/updateContent", function (req, res) {
 
 app.post("/deleteStory", function (req, res) {
   newsService.setFile(file);
-  try {
-    for (var i in req.body.selected) {
-      newsService.deleteStory(req.body.selected[i]);
-    }
-    res.render("updated", { op: "deleted" });
-  } catch (err) {
-    res.render("error");
-  }
+  let index = newsService.getIndex(req.body.title);
+  newsService.deleteStory(index);
+  res.render("updated", { op: "deleted" });
 });
 
 app.post("/addStory", function (req, res) {

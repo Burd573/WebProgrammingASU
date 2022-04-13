@@ -18,6 +18,7 @@ app.get("/stories/:author?/:title?/:startDate?/:endDate?", function (req, res) {
 });
 
 app.post("/updateHeadline", function (req, res) {
+  console.log(req.body);
   newsService.setFile(file);
   newsService.updateHeadline(req.body.selected, req.body.headline);
   res.set("Content-Type", "application/json");
