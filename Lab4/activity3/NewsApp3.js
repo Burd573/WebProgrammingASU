@@ -197,6 +197,7 @@ app.post("/addStory", function (req, res) {
     );
     res.render("updated", { op: "added" });
   } catch (err) {
+    res.status(400);
     res.render("error");
   }
 });

@@ -131,7 +131,7 @@ export const updateContent = (index, newContent) => {
 // Deletes a news story from the file
 export const deleteStory = (index) => {
   loadData();
-  data.articles.splice(index);
+  data.articles.splice(index, 1);
   writeFileSync(dataFile, JSON.stringify(data.contents));
 };
 
