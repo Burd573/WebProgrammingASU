@@ -7,10 +7,15 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>Welcome to Eliza!!</h1>
-    <div class="welcome">
-      <label id="nameLabel" for="name">Name</label>
-      <input id="nameInput" type="text" name="name" />
+    <h1 id="welcomeHeader">Welcome to Eliza!!</h1>
+    <div id="eliza" class="response" hidden="true">
+      <p id="echo">echo</p>
+      <p id="response">response</p>
+      <p id="question">question</p>
+    </div>
+    <div class="input">
+      <label id="inputLabel" for="name">Name</label>
+      <input id="input" type="text" name="input" />
       <button id="enter" onclick="getName()">Enter</button>
     </div>
     <script src="activity2.js"></script>
