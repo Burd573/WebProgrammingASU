@@ -1,4 +1,5 @@
 var uName = "name";
+var convo = {};
 var timer;
 
 var dictionary = {
@@ -200,13 +201,27 @@ var waiting = [
   " are you playing hard to get?",
 ];
 
-var data = {
-  name: "",
-  convo: [],
-};
+var tempDict = dictionary;
 
 getRandomElement = (list) => {
   return list[Math.floor(Math.random() * list.length)];
+};
+
+getElizaAnswer = (filtered, input) => {
+  if (filtered.length > 0) {
+    if (filtered[0].answer.length > 0) {
+      let index = Math.floor(Math.random() * filtered[0].answer.length);
+      console.log(index);
+      let answer = filtered[0].answer.splice(index, 1);
+      return answer;
+    }
+  } else {
+    let filtered2 = tempDict.entries.filter((obj) =>
+      obj["key"].includes(input)
+    );
+    filtered[0].answer = filtered2[0].answer;
+    return "Eliza: Unsure of how to respond to that";
+  }
 };
 
 const getName = () => {
@@ -214,27 +229,32 @@ const getName = () => {
   if (uName == "") {
     alert("No value entered for name");
     return;
-  } else {
-    data.name = uName;
-    welcome();
   }
+
+  var data = localStorage.getItem(uName);
+  if (data) {
+    convo[uName] = JSON.parse(data);
+    showChat(convo[uName]);
+  } else {
+    convo[uName] = [];
+    localStorage.setItem(uName, []);
+  }
+
+  welcome();
 };
 
 const welcome = () => {
   setTimer();
-  let elizaDiv = document.getElementById("eliza");
-  let response = document.createElement("p");
-  let question = document.createElement("p");
 
   document.getElementById("welcomeHeader").hidden = true;
   document.getElementById("inputLabel").hidden = true;
   document.getElementById("eliza").hidden = false;
-  response.textContent = `Welcome ${uName}!!!`;
-  data.convo.push(response);
-  question.textContent = `Eliza: ${getRandomElement(initQuestion)}`;
-  data.convo.push(question);
-  elizaDiv.appendChild(response);
-  elizaDiv.appendChild(question);
+
+  let res = `Welcome ${uName}!!!`;
+  addToDoc(res, "welcome");
+
+  let quest = getRandomElement(initQuestion);
+  addToDoc(quest, "newQuest");
 
   document.getElementById("enter").onclick = function () {
     eliza(document.getElementById("input").value);
@@ -242,27 +262,28 @@ const welcome = () => {
 };
 
 const eliza = (input) => {
-  setTimer();
-  let elizaDiv = document.getElementById("eliza");
-  let response = document.createElement("p");
-  let question = document.createElement("p");
-  let echo = document.createElement("p");
+  let filtered = dictionary.entries.filter((obj) => obj["key"].includes(input));
 
-  echo.textContent = `${uName}: ${input}`;
-  data.convo.push(echo);
-  elizaDiv.appendChild(echo);
-  let res = dictionary.entries.filter((obj) => obj["key"].includes(input));
-  if (res.length > 0) {
-    response.textContent = `Eliza: ${getRandomElement(res[0].answer)}`;
-    question.textContent = `Eliza: ${getRandomElement(res[0].question)}`;
-    elizaDiv.appendChild(response);
-    data.convo.push(response);
-    elizaDiv.appendChild(question);
-    data.convo.push(question);
+  setTimer();
+  if (input == "/clear") {
+    localStorage.removeItem(uName);
+    convo[uName] = [];
+    const eles = document.getElementsByClassName("prevConvo");
+    while (eles.length > 0) {
+      eles[0].parentNode.removeChild(eles[0]);
+    }
   } else {
-    response.textContent = "Eliza: Unsure of how to respond to that";
-    data.convo.push(response);
-    elizaDiv.appendChild(response);
+    let echo = `${uName}: ${input}`;
+    addToDoc(echo);
+
+    if (filtered.length > 0) {
+      let res = `Eliza: ${getRandomElement(filtered[0].answer)}`;
+      addToDoc(res);
+      let quest = `Eliza: ${getRandomElement(filtered[0].question)}`;
+      addToDoc(quest);
+    } else {
+      addToDoc("Eliza: Unsure of how to respond to that");
+    }
   }
 };
 
@@ -272,5 +293,27 @@ const setTimer = () => {
   }
   timer = setInterval(() => {
     alert(uName + getRandomElement(waiting));
-  }, 20000);
+  }, 200000000000000);
+};
+
+const addToDoc = (text, id) => {
+  let elizaDiv = document.getElementById("eliza");
+  let ele = document.createElement("p");
+  ele.textContent = text;
+  ele.id = id;
+  elizaDiv.appendChild(ele);
+  convo[uName].push(text);
+  localStorage.setItem(uName, JSON.stringify(convo[uName]));
+};
+
+const showChat = (data) => {
+  let elizaDiv = document.getElementById("eliza");
+
+  for (var i in data) {
+    let ele = document.createElement("p");
+    ele.classList.add("prevConvo");
+    ele.textContent = data[i];
+    elizaDiv.insertBefore(ele, document.getElementById("newQuest"));
+    elizaDiv.appendChild(ele);
+  }
 };
