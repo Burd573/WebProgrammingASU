@@ -200,6 +200,11 @@ var waiting = [
   " are you playing hard to get?",
 ];
 
+var data = {
+  name: "",
+  convo: [],
+};
+
 getRandomElement = (list) => {
   return list[Math.floor(Math.random() * list.length)];
 };
@@ -210,20 +215,27 @@ const getName = () => {
     alert("No value entered for name");
     return;
   } else {
+    data.name = uName;
     welcome();
   }
 };
 
 const welcome = () => {
   setTimer();
+  let elizaDiv = document.getElementById("eliza");
+  let response = document.createElement("p");
+  let question = document.createElement("p");
+
   document.getElementById("welcomeHeader").hidden = true;
-  document.getElementById("eliza").hidden = false;
-  document.getElementById("echo").hidden = true;
-  document.getElementById("response").innerHTML = `Welcome ${uName}!!!`;
   document.getElementById("inputLabel").hidden = true;
-  document.getElementById("question").innerHTML = `Eliza: ${getRandomElement(
-    initQuestion
-  )}`;
+  document.getElementById("eliza").hidden = false;
+  response.textContent = `Welcome ${uName}!!!`;
+  data.convo.push(response);
+  question.textContent = `Eliza: ${getRandomElement(initQuestion)}`;
+  data.convo.push(question);
+  elizaDiv.appendChild(response);
+  elizaDiv.appendChild(question);
+
   document.getElementById("enter").onclick = function () {
     eliza(document.getElementById("input").value);
   };
@@ -231,19 +243,26 @@ const welcome = () => {
 
 const eliza = (input) => {
   setTimer();
-  document.getElementById("echo").hidden = false;
-  document.getElementById("echo").innerHTML = `${uName}: ${input}`;
+  let elizaDiv = document.getElementById("eliza");
+  let response = document.createElement("p");
+  let question = document.createElement("p");
+  let echo = document.createElement("p");
+
+  echo.textContent = `${uName}: ${input}`;
+  data.convo.push(echo);
+  elizaDiv.appendChild(echo);
   let res = dictionary.entries.filter((obj) => obj["key"].includes(input));
   if (res.length > 0) {
-    document.getElementById("response").innerHTML = `Eliza: ${getRandomElement(
-      res[0].answer
-    )}`;
-    document.getElementById("question").innerHTML = `Eliza: ${getRandomElement(
-      res[0].question
-    )}`;
+    response.textContent = `Eliza: ${getRandomElement(res[0].answer)}`;
+    question.textContent = `Eliza: ${getRandomElement(res[0].question)}`;
+    elizaDiv.appendChild(response);
+    data.convo.push(response);
+    elizaDiv.appendChild(question);
+    data.convo.push(question);
   } else {
-    document.getElementById("response").innerHTML =
-      "Eliza: Unsure of how to respond to that";
+    response.textContent = "Eliza: Unsure of how to respond to that";
+    data.convo.push(response);
+    elizaDiv.appendChild(response);
   }
 };
 
