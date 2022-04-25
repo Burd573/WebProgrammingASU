@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "7a61ce8b-8c1d-4824-9bb4-d6c958f2978b",
+		"name": "SER421Lab4_caburdet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET: get stories with filter",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/stories?author=g&title=e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"stories"
+					],
+					"query": [
+						{
+							"key": "author",
+							"value": "g"
+						},
+						{
+							"key": "title",
+							"value": "e"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST: Add story",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "title",
+							"value": "New Story",
+							"type": "text"
+						},
+						{
+							"key": "author",
+							"value": "Chris Burdett",
+							"type": "text"
+						},
+						{
+							"key": "public",
+							"value": "f",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Here is a new story",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/addStory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"addStory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST: Update Headline",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "headline",
+							"value": "New Headline",
+							"type": "text"
+						},
+						{
+							"key": "selected",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/updateHeadline",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"updateHeadline"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST: Update content",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "content",
+							"value": "New Content",
+							"type": "text"
+						},
+						{
+							"key": "selected",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/updateContent",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"updateContent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST: Delete story",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "selected",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3001/deleteStory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"deleteStory"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
