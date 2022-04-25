@@ -207,23 +207,6 @@ getRandomElement = (list) => {
   return list[Math.floor(Math.random() * list.length)];
 };
 
-getElizaAnswer = (filtered, input) => {
-  if (filtered.length > 0) {
-    if (filtered[0].answer.length > 0) {
-      let index = Math.floor(Math.random() * filtered[0].answer.length);
-      console.log(index);
-      let answer = filtered[0].answer.splice(index, 1);
-      return answer;
-    }
-  } else {
-    let filtered2 = tempDict.entries.filter((obj) =>
-      obj["key"].includes(input)
-    );
-    filtered[0].answer = filtered2[0].answer;
-    return "Eliza: Unsure of how to respond to that";
-  }
-};
-
 const getName = () => {
   uName = document.getElementById("input").value;
   if (uName == "") {
